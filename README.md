@@ -141,8 +141,8 @@ classDiagram
         LocalDateTime updatedAt
     }
 
-     class Employee {
-        Long id
+    class Employee {
+        UUID id
         String fullName
         String email
         String cpf
@@ -163,6 +163,21 @@ classDiagram
         LocalDateTime updatedAt
     }
 
+    class Machine {
+        UUID id
+        String name
+        String type
+        String brand
+        String model
+        Integer manufacturingYear
+        String serialNumber
+        MachineStatus status
+        BigDecimal purchaseValue
+        LocalDate purchaseDate
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
     class AccessLevel {
         ADMIN
         MANAGER
@@ -178,7 +193,16 @@ classDiagram
         TERMINATED
     }
 
+    class MachineStatus {
+        OPERATIONAL
+        UNDER_MAINTENANCE
+        INACTIVE
+    }
+
     User --> AccessLevel : has
     Employee --> EmployeeStatus : has
+    Machine --> MachineStatus : has
+    Employee "1" --> "0..*" Machine : assigned
+
 
 ```
