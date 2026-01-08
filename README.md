@@ -125,7 +125,7 @@ cd agrosoft-backend
 # Executar a aplicação
 mvn spring-boot:run
 
-
+```
 
 ## 📍 Diagrama
 ```mermaid
