@@ -142,6 +142,7 @@ classDiagram
     }
 
     class Employee {
+        Long id
         String fullName
         String email
         String cpf
@@ -177,6 +178,73 @@ classDiagram
         TERMINATED
     }
 
+    class Machine {
+        UUID id
+        String name
+        String type
+        String brand
+        String model
+        Integer manufacturingYear
+        String serialNumber
+        MachineStatus status
+        BigDecimal purchaseValue
+        LocalDate purchaseDate
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
+    class MachineStatus {
+        OPERATIONAL
+        UNDER_MAINTENANCE
+        INACTIVE
+    }
+
+    class Animal {
+        UUID id
+        String name
+        String type
+        BigDecimal weight
+        LocalDate entryDate
+        AnimalStatus status
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
+    class AnimalStatus {
+        ACTIVE
+        SOLD
+    }
+
+    class FinancialTransaction {
+        UUID id
+        String description
+        BigDecimal amount
+        TransactionType type
+        FinancialCategory category
+        LocalDate transactionDate
+        LocalDateTime createdAt
+        LocalDateTime updatedAt
+    }
+
+    class FinancialCategory {
+        SALARY
+        MAINTENANCE
+        PURCHASE
+        SALE
+        OTHER
+    }
+
+    class TransactionType {
+        REVENUE
+        EXPENSE
+    }
+
+
     User --> AccessLevel : has
     Employee --> EmployeeStatus : has
+    Machine --> MachineStatus : has
+    Machine --> Employee : assignedTo
+    Animal --> AnimalStatus : has
+    Animal --> Employee : responsibleFor
+
 ```
