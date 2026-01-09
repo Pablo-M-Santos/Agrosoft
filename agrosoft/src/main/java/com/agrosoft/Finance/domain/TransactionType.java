@@ -1,4 +1,4 @@
-package com.agrosoft.finance.domain;
+package com.agrosoft.Finance.domain;
 
 public enum TransactionType {
     REVENUE,

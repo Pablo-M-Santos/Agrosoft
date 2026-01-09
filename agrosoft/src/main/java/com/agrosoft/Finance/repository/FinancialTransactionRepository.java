@@ -1,6 +1,6 @@
-package com.agrosoft.finance.repository;
+package com.agrosoft.Finance.repository;
 
-import com.agrosoft.finance.domain.FinancialTransaction;
+import com.agrosoft.Finance.domain.FinancialTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

@@ -1,13 +1,13 @@
-package com.agrosoft.animal.service;
+package com.agrosoft.Animal.service;
 
 import com.agrosoft.Employee.domain.Employee;
 import com.agrosoft.Employee.repository.EmployeeRepository;
-import com.agrosoft.animal.domain.Animal;
-import com.agrosoft.animal.domain.AnimalStatus;
-import com.agrosoft.animal.dto.AnimalResponseDTO;
-import com.agrosoft.animal.dto.CreateAnimalRequestDTO;
-import com.agrosoft.animal.dto.UpdateAnimalRequestDTO;
-import com.agrosoft.animal.repository.AnimalRepository;
+import com.agrosoft.Animal.domain.Animal;
+import com.agrosoft.Animal.domain.AnimalStatus;
+import com.agrosoft.Animal.dto.AnimalResponseDTO;
+import com.agrosoft.Animal.dto.CreateAnimalRequestDTO;
+import com.agrosoft.Animal.dto.UpdateAnimalRequestDTO;
+import com.agrosoft.Animal.repository.AnimalRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

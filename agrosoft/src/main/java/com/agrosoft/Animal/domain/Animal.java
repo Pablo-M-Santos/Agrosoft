@@ -1,4 +1,4 @@
-package com.agrosoft.animal.domain;
+package com.agrosoft.Animal.domain;
 
 import com.agrosoft.Employee.domain.Employee;
 

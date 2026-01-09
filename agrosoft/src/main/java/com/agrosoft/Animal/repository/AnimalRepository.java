@@ -1,6 +1,6 @@
-package com.agrosoft.animal.repository;
+package com.agrosoft.Animal.repository;
 
-import com.agrosoft.animal.domain.Animal;
+import com.agrosoft.Animal.domain.Animal;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

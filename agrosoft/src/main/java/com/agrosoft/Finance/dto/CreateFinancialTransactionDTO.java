@@ -1,7 +1,7 @@
-package com.agrosoft.finance.dto;
+package com.agrosoft.Finance.dto;
 
-import com.agrosoft.finance.domain.FinancialCategory;
-import com.agrosoft.finance.domain.TransactionType;
+import com.agrosoft.Finance.domain.FinancialCategory;
+import com.agrosoft.Finance.domain.TransactionType;
 import lombok.Getter;
 import lombok.Setter;
 

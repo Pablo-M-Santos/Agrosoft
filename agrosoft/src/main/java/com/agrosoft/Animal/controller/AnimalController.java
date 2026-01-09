@@ -1,9 +1,9 @@
-package com.agrosoft.animal.controller;
+package com.agrosoft.Animal.controller;
 
-import com.agrosoft.animal.dto.AnimalResponseDTO;
-import com.agrosoft.animal.dto.CreateAnimalRequestDTO;
-import com.agrosoft.animal.dto.UpdateAnimalRequestDTO;
-import com.agrosoft.animal.service.AnimalService;
+import com.agrosoft.Animal.dto.AnimalResponseDTO;
+import com.agrosoft.Animal.dto.CreateAnimalRequestDTO;
+import com.agrosoft.Animal.dto.UpdateAnimalRequestDTO;
+import com.agrosoft.Animal.service.AnimalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

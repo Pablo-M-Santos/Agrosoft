@@ -1,9 +1,9 @@
-package com.agrosoft.finance.controller;
+package com.agrosoft.Finance.controller;
 
-import com.agrosoft.finance.dto.CreateFinancialTransactionDTO;
-import com.agrosoft.finance.dto.FinancialTransactionResponseDTO;
-import com.agrosoft.finance.dto.UpdateFinancialTransactionDTO;
-import com.agrosoft.finance.sevice.FinancialTransactionService;
+import com.agrosoft.Finance.dto.CreateFinancialTransactionDTO;
+import com.agrosoft.Finance.dto.FinancialTransactionResponseDTO;
+import com.agrosoft.Finance.dto.UpdateFinancialTransactionDTO;
+import com.agrosoft.Finance.sevice.FinancialTransactionService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

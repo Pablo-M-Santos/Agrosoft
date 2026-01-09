@@ -1,10 +1,10 @@
-package com.agrosoft.finance.sevice;
+package com.agrosoft.Finance.sevice;
 
-import com.agrosoft.finance.domain.FinancialTransaction;
-import com.agrosoft.finance.dto.CreateFinancialTransactionDTO;
-import com.agrosoft.finance.dto.FinancialTransactionResponseDTO;
-import com.agrosoft.finance.dto.UpdateFinancialTransactionDTO;
-import com.agrosoft.finance.repository.FinancialTransactionRepository;
+import com.agrosoft.Finance.domain.FinancialTransaction;
+import com.agrosoft.Finance.dto.CreateFinancialTransactionDTO;
+import com.agrosoft.Finance.dto.FinancialTransactionResponseDTO;
+import com.agrosoft.Finance.dto.UpdateFinancialTransactionDTO;
+import com.agrosoft.Finance.repository.FinancialTransactionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
