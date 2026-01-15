@@ -36,10 +36,12 @@ public class Employee {
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
+    @Column(length = 20)
     private String rg;
 
     private LocalDate birthDate;
 
+    @Column(length = 15)
     private String phone;
 
     @Column(columnDefinition = "TEXT")
@@ -47,22 +49,31 @@ public class Employee {
 
     private String photoUrl;
 
-    private String driverLicenseCategory;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 2)
+    private DriverLicenseCategory driverLicenseCategory;
 
+    @Column(length = 100)
     private String workArea;
 
+    @Column(length = 100)
     private String relatedMachinery;
 
     private LocalDate hireDate;
 
     private LocalDate terminationDate;
 
+    @Column(precision = 10, scale = 2)
     private BigDecimal salary;
 
-    private String contractType;
 
     @Enumerated(EnumType.STRING)
-    private EmployeeStatus status;
+    @Column(nullable = false, length = 3)
+    private ContractType contractType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EmployeeStatus status = EmployeeStatus.ACTIVE;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -71,5 +82,15 @@ public class Employee {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+
+    public void deactivate() {
+        if (this.status == EmployeeStatus.INACTIVE) {
+            throw new IllegalStateException("Employee already inactive");
+        }
+
+        this.status = EmployeeStatus.INACTIVE;
+        this.terminationDate = LocalDate.now();
+    }
 
 }
