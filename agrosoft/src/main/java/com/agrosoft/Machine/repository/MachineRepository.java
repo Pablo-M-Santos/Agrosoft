@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface MachineRepository  extends JpaRepository<Machine, UUID> {
+public interface MachineRepository extends JpaRepository<Machine, UUID> {
 
     boolean existsBySerialNumber(String serialNumber);
 
@@ -17,4 +17,6 @@ public interface MachineRepository  extends JpaRepository<Machine, UUID> {
 
     List<Machine> findByNameContainingIgnoreCase(String name);
 
+    List<Machine> findByStatusNot(MachineStatus status);
 }
+

@@ -21,18 +21,21 @@ O sistema tem como objetivo auxiliar na **gestão operacional, financeira e anal
 
 ## 🔐 Funcionalidades Principais
 
-### 👤 Autenticação e Usuários
-- Login com **JWT**
-- Controle de acesso por perfil:
-    - `ADMIN`
-    - `GERENTE`
-    - `OPERADOR`
-- Cadastro e gerenciamento de usuários
-
 ### 👷 Funcionários
+
+Funcionalidades:
+
 - Cadastro de funcionários
 - Definição de **cargo e salário**
 - Controle de **status** (ativo / inativo)
+
+Regras de negócio:
+
+- Funcionários desativados não aparecem em listagens padrão
+
+- Não é permitido desativar um funcionário já inativo
+
+- Funcionários podem estar associados a máquinas
 
 ### 🐄 Gestão de Animais
 - Cadastro de animais (gado e outros)
@@ -42,10 +45,33 @@ O sistema tem como objetivo auxiliar na **gestão operacional, financeira e anal
 - Status (ativo / vendido)
 
 ### 🚜 Máquinas e Veículos
-- Cadastro de máquinas e veículos
-- Status operacional
-- Registro de custos de manutenção
+Módulo responsável pelo controle e rastreabilidade de máquinas e veículos da empresa.
 
+Funcionalidades:
+
+- Cadastro de máquinas
+- Atualização de dados principais
+- Alteração de status operacional
+- Associação de máquina a funcionário
+- Remoção da associação com funcionário
+- Listagem com filtros por status
+- Desativação lógica da máquina
+
+Regras de negócio:
+
+- Máquinas inativas não podem ser atribuídas a funcionários
+
+- Máquinas inativas não podem mudar de status
+
+  -  Uma máquina pode estar:
+
+      - disponível
+    
+      - em manutenção
+
+      - definitivamente inativa
+
+- Associação Máquina ↔ Funcionário é controlada via API específica
 ### 💰 Financeiro
 - Controle de **despesas e receitas**
 - Categorias financeiras
@@ -59,6 +85,24 @@ O sistema tem como objetivo auxiliar na **gestão operacional, financeira e anal
 - Funcionários ativos
 - Visualização de dashboards no frontend
 
+---
+
+### 📘 Documentação da API
+A API é totalmente documentada utilizando Swagger / OpenAPI.
+
+Após iniciar a aplicação, acesse:
+
+```http://localhost:8080/swagger-ui.html```
+
+Cada módulo possui:
+
+- Descrição clara das operações
+
+- Códigos de resposta HTTP
+
+- Exemplos de payloads
+
+- Separação por domínios (Employees, Machines, etc.)
 ---
 
 ## 🛠️ Tecnologias Utilizadas

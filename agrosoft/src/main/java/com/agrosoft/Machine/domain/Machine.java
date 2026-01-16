@@ -52,7 +52,7 @@ public class Machine {
     private LocalDate purchaseDate;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employee_id", nullable = true)
     private Employee assignedEmployee;
 
     @CreatedDate
@@ -62,4 +62,9 @@ public class Machine {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    public void deactivate() {
+        this.status = MachineStatus.INACTIVE;
+    }
+
 }
