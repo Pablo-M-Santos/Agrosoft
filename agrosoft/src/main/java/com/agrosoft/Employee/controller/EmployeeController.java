@@ -1,7 +1,9 @@
 package com.agrosoft.Employee.controller;
 
+import com.agrosoft.Employee.domain.EmployeeStatus;
 import com.agrosoft.Employee.dto.CreateEmployeeRequestDTO;
 import com.agrosoft.Employee.dto.EmployeeResponseDTO;
+import com.agrosoft.Employee.dto.EmployeeStatsDTO;
 import com.agrosoft.Employee.dto.UpdateEmployeeRequestDTO;
 import com.agrosoft.Employee.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,10 +15,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employees")
@@ -45,16 +49,36 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/batch")
+    @Operation(summary = "Create multiple employees", description = "Creates multiple employees at once")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Employees created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    public ResponseEntity<List<EmployeeResponseDTO>> createBatch(
+            @Valid @RequestBody List<CreateEmployeeRequestDTO> dtos
+    ) {
+        List<EmployeeResponseDTO> responses = dtos.stream()
+                .map(employeeService::create)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responses);
+    }
+
+
 
     @GetMapping
-    @Operation(summary = "Get all active employees", description = "Returns a list of all active employees")
+    @Operation(summary = "Get all employees", description = "Returns a list of employees, optionally filtered by status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of employees retrieved successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeResponseDTO.class)))
     })
-    public ResponseEntity<List<EmployeeResponseDTO>> findAll() {
-        return ResponseEntity.ok(employeeService.findAll());
+    public ResponseEntity<List<EmployeeResponseDTO>> findAll(
+            @RequestParam(required = false) String status
+    ) {
+        return ResponseEntity.ok(employeeService.findAll(status));
     }
+
 
 
     @GetMapping("/{id}")
@@ -84,6 +108,45 @@ public class EmployeeController {
             @Valid @RequestBody UpdateEmployeeRequestDTO dto
     ) {
         return ResponseEntity.ok(employeeService.update(id, dto));
+    }
+
+    @PatchMapping("/{id}/status")
+    @Operation(
+            summary = "Change employee status",
+            description = "Updates the status of an existing employee. Possible statuses: ACTIVE, ON_LEAVE, INACTIVE, TERMINATED"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee status updated successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeResponseDTO.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid status provided", content = @Content)
+    })
+    public ResponseEntity<EmployeeResponseDTO> changeStatus(
+            @PathVariable UUID id,
+            @RequestParam String status
+    ) {
+        EmployeeStatus newStatus;
+        try {
+            newStatus = EmployeeStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status provided");
+        }
+
+        EmployeeResponseDTO updated = employeeService.changeStatus(id, newStatus);
+        return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/stats")
+    @Operation(summary = "Get employee stats", description = "Returns counts of employees by status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee stats retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeStatsDTO.class)))
+    })
+    public ResponseEntity<EmployeeStatsDTO> getStats() {
+        return ResponseEntity.ok(employeeService.getStats());
     }
 
 

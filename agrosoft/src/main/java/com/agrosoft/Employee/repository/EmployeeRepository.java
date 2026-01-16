@@ -22,6 +22,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     boolean existsByCpfAndIdNot(String cpf, UUID id);
 
+    long countByStatus(EmployeeStatus status);
+
     Optional<Employee> findByIdAndStatus(UUID id, EmployeeStatus status);
 
     List<Employee> findAllByStatus(EmployeeStatus status);

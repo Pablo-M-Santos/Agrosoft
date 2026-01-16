@@ -5,14 +5,14 @@ import com.agrosoft.Employee.domain.Employee;
 import com.agrosoft.Employee.domain.EmployeeStatus;
 import com.agrosoft.Employee.dto.CreateEmployeeRequestDTO;
 import com.agrosoft.Employee.dto.EmployeeResponseDTO;
+import com.agrosoft.Employee.dto.EmployeeStatsDTO;
 import com.agrosoft.Employee.dto.UpdateEmployeeRequestDTO;
 import com.agrosoft.Employee.repository.EmployeeRepository;
 import com.agrosoft.exception.BusinessException;
 import com.agrosoft.exception.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,9 +37,18 @@ public class EmployeeService {
         return toResponseDTO(savedEmployee);
     }
 
-    public List<EmployeeResponseDTO> findAll() {
-        return employeeRepository.findAllByStatus(EmployeeStatus.ACTIVE)
-                .stream()
+    public List<EmployeeResponseDTO> findAll(String statusFilter) {
+        List<Employee> employees;
+
+        if (statusFilter == null || statusFilter.isEmpty()) {
+            employees = employeeRepository.findAll(); // retorna todos
+        } else {
+            // Converte para enum
+            EmployeeStatus status = EmployeeStatus.valueOf(statusFilter.toUpperCase());
+            employees = employeeRepository.findAllByStatus(status);
+        }
+
+        return employees.stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -99,6 +108,41 @@ public class EmployeeService {
 
         return employee;
     }
+
+
+    public EmployeeResponseDTO changeStatus(UUID id, EmployeeStatus newStatus) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+
+        employee.setStatus(newStatus);
+
+
+        if (newStatus == EmployeeStatus.INACTIVE || newStatus == EmployeeStatus.TERMINATED) {
+            employee.setTerminationDate(LocalDate.now());
+        } else {
+
+            employee.setTerminationDate(null);
+        }
+
+        return toResponseDTO(employeeRepository.save(employee));
+    }
+
+    public EmployeeStatsDTO getStats() {
+        long total = employeeRepository.count();
+        long active = employeeRepository.countByStatus(EmployeeStatus.ACTIVE);
+        long inactive = employeeRepository.countByStatus(EmployeeStatus.INACTIVE);
+        long onLeave = employeeRepository.countByStatus(EmployeeStatus.ON_LEAVE);
+
+        EmployeeStatsDTO stats = new EmployeeStatsDTO();
+        stats.setTotal(total);
+        stats.setActive(active);
+        stats.setInactive(inactive);
+        stats.setOnLeave(onLeave);
+
+        return stats;
+    }
+
+
 
     private Employee buildEmployee(CreateEmployeeRequestDTO dto) {
         Employee employee = new Employee();
