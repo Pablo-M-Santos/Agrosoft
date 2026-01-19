@@ -12,7 +12,7 @@ import java.util.UUID;
 public class UpdateAnimalRequestDTO {
 
     private String name;
-    private String type;
+    private UUID animalTypeId;
     private BigDecimal weight;
     private AnimalStatus status;
     private UUID responsibleEmployeeId;

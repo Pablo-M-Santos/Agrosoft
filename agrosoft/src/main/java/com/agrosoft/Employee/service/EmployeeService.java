@@ -41,9 +41,8 @@ public class EmployeeService {
         List<Employee> employees;
 
         if (statusFilter == null || statusFilter.isEmpty()) {
-            employees = employeeRepository.findAll(); // retorna todos
+            employees = employeeRepository.findAll();
         } else {
-            // Converte para enum
             EmployeeStatus status = EmployeeStatus.valueOf(statusFilter.toUpperCase());
             employees = employeeRepository.findAllByStatus(status);
         }

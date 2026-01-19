@@ -13,7 +13,7 @@ import java.util.UUID;
 public class CreateAnimalRequestDTO {
 
     private String name;
-    private String type;
+    private UUID animalTypeId;;
     private BigDecimal weight;
     private LocalDate entryDate;
     private AnimalStatus status;

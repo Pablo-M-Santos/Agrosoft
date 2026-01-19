@@ -5,10 +5,7 @@ import com.agrosoft.Employee.domain.Employee;
 import com.agrosoft.Employee.repository.EmployeeRepository;
 import com.agrosoft.Machine.domain.Machine;
 import com.agrosoft.Machine.domain.MachineStatus;
-import com.agrosoft.Machine.dto.CreateMachineRequestDTO;
-import com.agrosoft.Machine.dto.MachineResponseDTO;
-import com.agrosoft.Machine.dto.UpdateMachineRequestDTO;
-import com.agrosoft.Machine.dto.UpdateMachineStatusDTO;
+import com.agrosoft.Machine.dto.*;
 import com.agrosoft.Machine.repository.MachineRepository;
 import com.agrosoft.exception.BusinessException;
 import com.agrosoft.exception.ResourceNotFoundException;
@@ -33,23 +30,21 @@ public class MachineService {
     }
 
     public MachineResponseDTO create(CreateMachineRequestDTO dto) {
-
         if (dto.getSerialNumber() != null && machineRepository.existsBySerialNumber(dto.getSerialNumber())) {
             throw new BusinessException("Machine with this serial number already exists");
         }
 
         Machine machine = buildMachine(dto);
-        Machine savedMachine = machineRepository.save(machine);
-        return toResponseDTO(savedMachine);
+        Machine saved = machineRepository.save(machine);
+        return toResponseDTO(saved);
     }
 
 
-    public List<MachineResponseDTO> findAll(MachineStatus status, Boolean includeInactive) {
-
+    public List<MachineResponseDTO> findAll(MachineStatus statusFilter, Boolean includeInactive) {
         List<Machine> machines;
 
-        if (status != null) {
-            machines = machineRepository.findByStatus(status);
+        if (statusFilter != null) {
+            machines = machineRepository.findByStatus(statusFilter);
         } else if (Boolean.FALSE.equals(includeInactive)) {
             machines = machineRepository.findByStatusNot(MachineStatus.INACTIVE);
         } else {
@@ -62,14 +57,10 @@ public class MachineService {
     }
 
 
-
     public MachineResponseDTO findById(UUID id) {
         Machine machine = findActiveMachine(id);
         return toResponseDTO(machine);
     }
-
-
-
 
     public MachineResponseDTO updateMachine(UUID id, UpdateMachineRequestDTO dto) {
         Machine machine = findActiveMachine(id);
@@ -78,25 +69,40 @@ public class MachineService {
         if (dto.getType() != null) machine.setType(dto.getType());
         if (dto.getBrand() != null) machine.setBrand(dto.getBrand());
         if (dto.getModel() != null) machine.setModel(dto.getModel());
+        if (dto.getManufacturingYear() != null) machine.setManufacturingYear(dto.getManufacturingYear());
+        if (dto.getSerialNumber() != null) machine.setSerialNumber(dto.getSerialNumber());
         if (dto.getPurchaseValue() != null) machine.setPurchaseValue(dto.getPurchaseValue());
+        if (dto.getPurchaseDate() != null) machine.setPurchaseDate(dto.getPurchaseDate());
 
         return toResponseDTO(machineRepository.save(machine));
     }
 
     public MachineResponseDTO updateStatus(UUID id, UpdateMachineStatusDTO dto) {
-        Machine machine = findActiveMachine(id);
-
         if (dto.getStatus() == null) {
             throw new BusinessException("Status is required");
         }
-
+        Machine machine = findActiveMachine(id);
         machine.setStatus(dto.getStatus());
         return toResponseDTO(machineRepository.save(machine));
     }
 
+    public MachineStatsDTO getStats() {
+        long total = machineRepository.count();
+        long operational = machineRepository.countByStatus(MachineStatus.OPERATIONAL);
+        long underMaintenance = machineRepository.countByStatus(MachineStatus.UNDER_MAINTENANCE);
+        long inactive = machineRepository.countByStatus(MachineStatus.INACTIVE);
 
-    public MachineResponseDTO assignEmployee(UUID id, UUID employeeId) {
-        Machine machine = findActiveMachine(id);
+        MachineStatsDTO stats = new MachineStatsDTO();
+        stats.setTotal(total);
+        stats.setOperational(operational);
+        stats.setUnderMaintenance(underMaintenance);
+        stats.setInactive(inactive);
+
+        return stats;
+    }
+
+    public MachineResponseDTO assignEmployee(UUID machineId, UUID employeeId) {
+        Machine machine = findActiveMachine(machineId);
 
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
@@ -105,12 +111,11 @@ public class MachineService {
         return toResponseDTO(machineRepository.save(machine));
     }
 
-    public MachineResponseDTO unassignEmployee(UUID id) {
-        Machine machine = findActiveMachine(id);
+    public MachineResponseDTO unassignEmployee(UUID machineId) {
+        Machine machine = findActiveMachine(machineId);
         machine.setAssignedEmployee(null);
         return toResponseDTO(machineRepository.save(machine));
     }
-
 
     public void deactivate(UUID id) {
         Machine machine = findActiveMachine(id);
@@ -125,6 +130,7 @@ public class MachineService {
                 .collect(Collectors.toList());
     }
 
+
     private Machine findActiveMachine(UUID id) {
         Machine machine = machineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Machine not found"));
@@ -138,11 +144,11 @@ public class MachineService {
 
     private Machine buildMachine(CreateMachineRequestDTO dto) {
         Machine machine = new Machine();
-
         machine.setName(dto.getName());
         machine.setType(dto.getType());
         machine.setBrand(dto.getBrand());
         machine.setModel(dto.getModel());
+        machine.setManufacturingYear(dto.getManufacturingYear());
         machine.setSerialNumber(dto.getSerialNumber());
         machine.setPurchaseDate(dto.getPurchaseDate());
         machine.setPurchaseValue(dto.getPurchaseValue());

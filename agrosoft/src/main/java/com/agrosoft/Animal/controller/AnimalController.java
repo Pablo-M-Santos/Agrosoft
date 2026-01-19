@@ -1,6 +1,7 @@
 package com.agrosoft.Animal.controller;
 
 import com.agrosoft.Animal.dto.AnimalResponseDTO;
+import com.agrosoft.Animal.dto.AnimalStatsDTO;
 import com.agrosoft.Animal.dto.CreateAnimalRequestDTO;
 import com.agrosoft.Animal.dto.UpdateAnimalRequestDTO;
 import com.agrosoft.Animal.service.AnimalService;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +25,7 @@ public class AnimalController {
 
 
     @PostMapping
-    public ResponseEntity<AnimalResponseDTO> create(@RequestBody CreateAnimalRequestDTO dto) {
+    public ResponseEntity<AnimalResponseDTO> create(@Valid @RequestBody CreateAnimalRequestDTO dto) {
         AnimalResponseDTO response = animalService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -40,6 +42,15 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.findById(id));
     }
 
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<List<AnimalResponseDTO>> findByEmployee( @PathVariable UUID employeeId ) {
+        return ResponseEntity.ok(animalService.findByEmployee(employeeId));
+    }
+
+    @GetMapping("/type/{typeId}")
+    public ResponseEntity<List<AnimalResponseDTO>> findByType( @PathVariable UUID typeId ) {
+        return ResponseEntity.ok(animalService.findByType(typeId));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<AnimalResponseDTO> update(
@@ -50,15 +61,16 @@ public class AnimalController {
     }
 
 
+    @GetMapping("/stats")
+    public ResponseEntity<AnimalStatsDTO> getStats() {
+        return ResponseEntity.ok(animalService.getStats());
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deactivate(@PathVariable UUID id) {
         animalService.deactivate(id);
         return ResponseEntity.noContent().build();
     }
 
-
-    @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<AnimalResponseDTO>> findByEmployee(@PathVariable UUID employeeId) {
-        return ResponseEntity.ok(animalService.findByEmployee(employeeId));
-    }
 }

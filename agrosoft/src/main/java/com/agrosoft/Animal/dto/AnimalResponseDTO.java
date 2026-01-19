@@ -15,7 +15,8 @@ public class AnimalResponseDTO {
 
     private UUID id;
     private String name;
-    private String type;
+    private UUID animalTypeId;
+    private String animalTypeName;
     private BigDecimal weight;
     private LocalDate entryDate;
     private AnimalStatus status;

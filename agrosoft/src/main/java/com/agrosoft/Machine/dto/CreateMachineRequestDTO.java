@@ -34,7 +34,6 @@ public class CreateMachineRequestDTO {
     @Size(max = 50, message = "Serial number must have at most 50 characters")
     private String serialNumber;
 
-    @NotNull(message = "Status is required")
     private MachineStatus status;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "Purchase value must be zero or greater")

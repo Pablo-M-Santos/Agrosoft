@@ -1,5 +1,7 @@
 package com.agrosoft.Animal.service;
 
+import com.agrosoft.Animal.domain.AnimalType;
+import com.agrosoft.Animal.dto.AnimalStatsDTO;
 import com.agrosoft.Employee.domain.Employee;
 import com.agrosoft.Employee.repository.EmployeeRepository;
 import com.agrosoft.Animal.domain.Animal;
@@ -21,21 +23,38 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final EmployeeRepository employeeRepository;
+    private final AnimalTypeService animalTypeService;
 
     public AnimalService(AnimalRepository animalRepository,
-                         EmployeeRepository employeeRepository) {
+                         EmployeeRepository employeeRepository, AnimalTypeService animalTypeService) {
         this.animalRepository = animalRepository;
         this.employeeRepository = employeeRepository;
+        this.animalTypeService = animalTypeService;
     }
 
 
     public AnimalResponseDTO create(CreateAnimalRequestDTO dto) {
         Animal animal = new Animal();
         animal.setName(dto.getName());
-        animal.setType(dto.getType());
         animal.setWeight(dto.getWeight());
         animal.setEntryDate(dto.getEntryDate());
         animal.setStatus(dto.getStatus() != null ? dto.getStatus() : AnimalStatus.ACTIVE);
+
+        AnimalType type;
+
+        if (dto.getAnimalTypeId() != null) {
+            type = animalTypeService.findById(dto.getAnimalTypeId());
+        } else if (dto.getName() != null) {
+            type = animalTypeService.findOrCreate(dto.getName());
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Animal type is required"
+            );
+        }
+
+        animal.setType(type);
+
 
         if (dto.getResponsibleEmployeeId() != null) {
             Employee employee = employeeRepository.findById(dto.getResponsibleEmployeeId())
@@ -46,8 +65,7 @@ public class AnimalService {
             animal.setResponsibleEmployee(employee);
         }
 
-        Animal savedAnimal = animalRepository.save(animal);
-        return toResponseDTO(savedAnimal);
+        return toResponseDTO(animalRepository.save(animal));
     }
 
 
@@ -68,6 +86,30 @@ public class AnimalService {
         return toResponseDTO(animal);
     }
 
+    public List<AnimalResponseDTO> findByType(UUID typeId) {
+        return animalRepository.findByType_Id(typeId)
+                .stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    public AnimalStatsDTO getStats() {
+        long total = animalRepository.count();
+        long active = animalRepository.countByStatus(AnimalStatus.ACTIVE);
+        long sold = animalRepository.countByStatus(AnimalStatus.SOLD);
+        long underCare = animalRepository.countByStatus(AnimalStatus.UNDER_CARE);
+
+        AnimalStatsDTO stats = new AnimalStatsDTO();
+        stats.setTotal(total);
+        stats.setActive(active);
+        stats.setSold(sold);
+        stats.setUnderCare(underCare);
+
+        return stats;
+    }
+
+
 
     public AnimalResponseDTO update(UUID id, UpdateAnimalRequestDTO dto) {
         Animal animal = animalRepository.findById(id)
@@ -76,11 +118,13 @@ public class AnimalService {
                         "Animal not found"
                 ));
 
-        animal.setName(dto.getName());
-        animal.setType(dto.getType());
-        animal.setWeight(dto.getWeight());
-        if (dto.getStatus() != null) {
-            animal.setStatus(dto.getStatus());
+        if (dto.getName() != null) animal.setName(dto.getName());
+        if (dto.getWeight() != null) animal.setWeight(dto.getWeight());
+        if (dto.getStatus() != null) animal.setStatus(dto.getStatus());
+
+        if (dto.getAnimalTypeId() != null) {
+            AnimalType type = animalTypeService.findById(dto.getAnimalTypeId());
+            animal.setType(type);
         }
 
 
@@ -95,8 +139,7 @@ public class AnimalService {
             animal.setResponsibleEmployee(null);
         }
 
-        Animal updatedAnimal = animalRepository.save(animal);
-        return toResponseDTO(updatedAnimal);
+        return toResponseDTO(animalRepository.save(animal));
     }
 
 
@@ -123,12 +166,16 @@ public class AnimalService {
         AnimalResponseDTO dto = new AnimalResponseDTO();
         dto.setId(animal.getId());
         dto.setName(animal.getName());
-        dto.setType(animal.getType());
         dto.setWeight(animal.getWeight());
         dto.setEntryDate(animal.getEntryDate());
         dto.setStatus(animal.getStatus());
         dto.setCreatedAt(animal.getCreatedAt());
         dto.setUpdatedAt(animal.getUpdatedAt());
+
+        if (animal.getType() != null) {
+            dto.setAnimalTypeId(animal.getType().getId());
+            dto.setAnimalTypeName(animal.getType().getName());
+        }
 
         if (animal.getResponsibleEmployee() != null) {
             dto.setResponsibleEmployeeId(animal.getResponsibleEmployee().getId());

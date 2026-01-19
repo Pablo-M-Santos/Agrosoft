@@ -29,13 +29,15 @@ public class Animal {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false)
-    private String type;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "animal_type_id")
+    private AnimalType type;
 
-    @Column(nullable = false)
+
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal weight;
 
     @Column(name = "entry_date", nullable = false)
@@ -43,10 +45,9 @@ public class Animal {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AnimalStatus status;
+    private AnimalStatus status = AnimalStatus.ACTIVE;
 
-
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "employee_id")
     private Employee responsibleEmployee;
 
