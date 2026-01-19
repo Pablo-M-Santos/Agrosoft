@@ -20,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "financial_transactions")
-public class FinancialTransaction {
+public class Financial {
 
     @Id
     @GeneratedValue
@@ -30,12 +30,12 @@ public class FinancialTransaction {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type; // RECEITA ou DESPESA
+    private TransactionType type;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

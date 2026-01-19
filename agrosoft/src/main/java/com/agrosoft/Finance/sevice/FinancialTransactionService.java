@@ -1,7 +1,9 @@
 package com.agrosoft.Finance.sevice;
 
-import com.agrosoft.Finance.domain.FinancialTransaction;
+import com.agrosoft.Finance.domain.Financial;
+import com.agrosoft.Finance.domain.TransactionType;
 import com.agrosoft.Finance.dto.CreateFinancialTransactionDTO;
+import com.agrosoft.Finance.dto.FinancialStatsDTO;
 import com.agrosoft.Finance.dto.FinancialTransactionResponseDTO;
 import com.agrosoft.Finance.dto.UpdateFinancialTransactionDTO;
 import com.agrosoft.Finance.repository.FinancialTransactionRepository;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -24,15 +27,20 @@ public class FinancialTransactionService {
     }
 
     public FinancialTransactionResponseDTO create(CreateFinancialTransactionDTO dto) {
-        FinancialTransaction tx = new FinancialTransaction();
+
+        if (dto.getAmount().signum() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than zero");
+        }
+
+
+        Financial tx = new Financial();
         tx.setDescription(dto.getDescription());
         tx.setAmount(dto.getAmount());
         tx.setType(dto.getType());
         tx.setCategory(dto.getCategory());
         tx.setTransactionDate(dto.getTransactionDate());
 
-        FinancialTransaction saved = repository.save(tx);
-        return toResponseDTO(saved);
+        return toResponseDTO(repository.save(tx));
     }
 
     public List<FinancialTransactionResponseDTO> findAll() {
@@ -42,27 +50,51 @@ public class FinancialTransactionService {
     }
 
     public FinancialTransactionResponseDTO findById(UUID id) {
-        FinancialTransaction tx = repository.findById(id)
+        Financial tx = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
         return toResponseDTO(tx);
     }
 
     public FinancialTransactionResponseDTO update(UUID id, UpdateFinancialTransactionDTO dto) {
-        FinancialTransaction tx = repository.findById(id)
+        Financial tx = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
-        tx.setDescription(dto.getDescription());
-        tx.setAmount(dto.getAmount());
-        tx.setType(dto.getType());
-        tx.setCategory(dto.getCategory());
-        tx.setTransactionDate(dto.getTransactionDate());
+        if (dto.getDescription() != null) tx.setDescription(dto.getDescription());
+        if (dto.getAmount() != null) tx.setAmount(dto.getAmount());
+        if (dto.getType() != null) tx.setType(dto.getType());
+        if (dto.getCategory() != null) tx.setCategory(dto.getCategory());
+        if (dto.getTransactionDate() != null) tx.setTransactionDate(dto.getTransactionDate());
 
-        FinancialTransaction updated = repository.save(tx);
+
+        Financial updated = repository.save(tx);
         return toResponseDTO(updated);
     }
 
+    public FinancialStatsDTO getStats() {
+        BigDecimal totalRevenues = repository.sumByType(TransactionType.REVENUE);
+        BigDecimal totalExpenses = repository.sumByType(TransactionType.EXPENSE);
+
+        totalRevenues = (totalRevenues != null) ? totalRevenues : BigDecimal.ZERO;
+        totalExpenses = (totalExpenses != null) ? totalExpenses : BigDecimal.ZERO;
+
+
+        BigDecimal totalMovimentado = totalRevenues.add(totalExpenses);
+
+
+        BigDecimal saldoReal = totalRevenues.subtract(totalExpenses);
+
+        FinancialStatsDTO stats = new FinancialStatsDTO();
+        stats.setRevenues(totalRevenues);
+        stats.setExpenses(totalExpenses);
+        stats.setTotal(totalMovimentado);
+        stats.setBalance(saldoReal);
+
+        return stats;
+    }
+
+
     public void delete(UUID id) {
-        FinancialTransaction tx = repository.findById(id)
+        Financial tx = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found"));
         repository.delete(tx);
     }
@@ -74,7 +106,7 @@ public class FinancialTransactionService {
                 .collect(Collectors.toList());
     }
 
-    private FinancialTransactionResponseDTO toResponseDTO(FinancialTransaction tx) {
+    private FinancialTransactionResponseDTO toResponseDTO(Financial tx) {
         FinancialTransactionResponseDTO dto = new FinancialTransactionResponseDTO();
         dto.setId(tx.getId());
         dto.setDescription(tx.getDescription());
