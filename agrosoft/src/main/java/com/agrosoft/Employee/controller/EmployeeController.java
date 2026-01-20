@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,10 +75,10 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "List of employees retrieved successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeResponseDTO.class)))
     })
-    public ResponseEntity<List<EmployeeResponseDTO>> findAll(
-            @RequestParam(required = false) String status
-    ) {
-        return ResponseEntity.ok(employeeService.findAll(status));
+    public ResponseEntity<Page<EmployeeResponseDTO>> findAll(
+            @RequestParam(required = false) String status,
+            Pageable pageable) {
+        return ResponseEntity.ok(employeeService.findAll(status, pageable));
     }
 
 

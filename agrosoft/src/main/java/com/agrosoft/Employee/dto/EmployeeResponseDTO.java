@@ -18,6 +18,8 @@ public class EmployeeResponseDTO {
     private UUID id;
     private String fullName;
     private String email;
+    private String cpf;
+    private String rg;
     private LocalDate birthDate;
     private String phone;
     private String address;

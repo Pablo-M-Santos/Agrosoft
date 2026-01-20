@@ -10,6 +10,8 @@ import com.agrosoft.Employee.dto.UpdateEmployeeRequestDTO;
 import com.agrosoft.Employee.repository.EmployeeRepository;
 import com.agrosoft.exception.BusinessException;
 import com.agrosoft.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,30 +39,38 @@ public class EmployeeService {
         return toResponseDTO(savedEmployee);
     }
 
-    public List<EmployeeResponseDTO> findAll(String statusFilter) {
-        List<Employee> employees;
+    public Page<EmployeeResponseDTO> findAll(String statusFilter, Pageable pageable) {
+        Page<Employee> employeePage;
 
         if (statusFilter == null || statusFilter.isEmpty()) {
-            employees = employeeRepository.findAll();
+            employeePage = employeeRepository.findAll(pageable);
         } else {
             EmployeeStatus status = EmployeeStatus.valueOf(statusFilter.toUpperCase());
-            employees = employeeRepository.findAllByStatus(status);
+            employeePage = employeeRepository.findAllByStatus(status, pageable);
         }
 
-        return employees.stream()
-                .map(this::toResponseDTO)
-                .collect(Collectors.toList());
+
+        return employeePage.map(this::toResponseDTO);
     }
 
 
     public EmployeeResponseDTO findById(UUID id) {
-        Employee employee = findActiveEmployee(id);
+        Employee employee = findEmployeeById(id);
         return toResponseDTO(employee);
     }
 
 
     public EmployeeResponseDTO update(UUID id, UpdateEmployeeRequestDTO dto) {
-        Employee employee = findActiveEmployee(id);
+        Employee employee = findEmployeeById(id);
+
+        if (dto.getEmail() != null) employee.setEmail(dto.getEmail());
+        if (dto.getCpf() != null) employee.setCpf(dto.getCpf());
+        if (dto.getRg() != null) employee.setRg(dto.getRg());
+        if (dto.getBirthDate() != null) employee.setBirthDate(dto.getBirthDate());
+        if (dto.getWorkArea() != null) employee.setWorkArea(dto.getWorkArea());
+        if (dto.getDriverLicenseCategory() != null) employee.setDriverLicenseCategory(dto.getDriverLicenseCategory());
+        if (dto.getHireDate() != null) employee.setHireDate(dto.getHireDate());
+        if (dto.getStatus() != null) employee.setStatus(dto.getStatus());
 
         if (dto.getFullName() != null) {
             employee.setFullName(dto.getFullName());
@@ -84,7 +94,22 @@ public class EmployeeService {
             employee.setContractType(dto.getContractType());
         }
 
-        return toResponseDTO(employeeRepository.save(employee));
+        if (dto.getStatus() != null) {
+
+            if (dto.getStatus() == EmployeeStatus.INACTIVE || dto.getStatus() == EmployeeStatus.TERMINATED) {
+                if (employee.getStatus() == EmployeeStatus.ACTIVE) {
+                    employee.setTerminationDate(LocalDate.now());
+                }
+            } else {
+
+                employee.setTerminationDate(null);
+            }
+            employee.setStatus(dto.getStatus());
+        }
+
+
+        Employee updatedEmployee = employeeRepository.save(employee);
+        return toResponseDTO(updatedEmployee);
     }
 
 
@@ -106,6 +131,11 @@ public class EmployeeService {
         }
 
         return employee;
+    }
+
+    private Employee findEmployeeById(UUID id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
     }
 
 
@@ -171,6 +201,8 @@ public class EmployeeService {
         dto.setId(employee.getId());
         dto.setFullName(employee.getFullName());
         dto.setEmail(employee.getEmail());
+        dto.setCpf(employee.getCpf());
+        dto.setRg(employee.getRg());
         dto.setBirthDate(employee.getBirthDate());
         dto.setPhone(employee.getPhone());
         dto.setAddress(employee.getAddress());

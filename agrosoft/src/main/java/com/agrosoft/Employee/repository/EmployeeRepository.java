@@ -2,6 +2,8 @@ package com.agrosoft.Employee.repository;
 
 import com.agrosoft.Employee.domain.Employee;
 import com.agrosoft.Employee.domain.EmployeeStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -27,4 +29,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     Optional<Employee> findByIdAndStatus(UUID id, EmployeeStatus status);
 
     List<Employee> findAllByStatus(EmployeeStatus status);
+
+    Page<Employee> findAll(Pageable pageable);
+
+    Page<Employee> findAllByStatus(EmployeeStatus status, Pageable pageable);
 }
