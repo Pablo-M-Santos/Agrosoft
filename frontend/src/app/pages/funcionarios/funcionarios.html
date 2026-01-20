@@ -1,0 +1,43 @@
+<div class="cards-container">
+  <app-card title="Total de funcionários" [value]="cards.total" icon="badge" iconColor="#3B82F6"></app-card>
+  <app-card title="Funcionarios Ativos" [value]="cards.active" icon="check_circle" iconColor="#22C55E"></app-card>
+  <app-card title="Funcionarios Em licença" [value]="cards.onLeave" icon="schedule" iconColor="#F59E0B"></app-card>
+  <app-card title="Funcionarios Inativos" [value]="cards.inactive" icon="cancel" iconColor="#EF4444"></app-card>
+</div>
+
+<div class="table-header">
+  <div class="table-header-text">
+    <h2>Funcionários</h2>
+    <p>Gerencie colaboradores e seus status.</p>
+  </div>
+  <button class="btn-add" (click)="openDialog()">
+    <span class="material-icons">add</span>
+    Adicionar Funcionário
+  </button>
+</div>
+
+
+<div class="main-table-card">
+  <app-data-table [columns]="columns" [dataSource]="funcionarios" [statusMap]="statusMap" (edit)="onEdit($event)"
+    (delete)="onDelete($event)">
+  </app-data-table>
+
+  <div class="custom-pagination">
+    <mat-icon class="nav-icon" [class.disabled]="currentPage === 0"
+      (click)="currentPage !== 0 && onPageChange(currentPage - 1)">
+      chevron_left
+    </mat-icon>
+
+    <div class="page-numbers">
+      <button *ngFor="let page of pageNumbers" class="page-num-btn" [class.active]="page === currentPage"
+        (click)="onPageChange(page)">
+        {{ page + 1 }}
+      </button>
+    </div>
+
+    <mat-icon class="nav-icon" [class.disabled]="(currentPage + 1) * pageSize >= totalElements"
+      (click)="(currentPage + 1) * pageSize < totalElements && onPageChange(currentPage + 1)">
+      chevron_right
+    </mat-icon>
+  </div>
+</div>
