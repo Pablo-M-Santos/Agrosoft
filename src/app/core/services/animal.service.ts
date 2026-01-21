@@ -15,7 +15,7 @@ export interface AnimalStats {
 })
 export class AnimalService {
 
-  private readonly API = 'http://localhost:8080/animals';
+  private readonly API = 'https://agrosoft-9bmj.onrender.com/animals';
 
   constructor(private http: HttpClient) {}
 

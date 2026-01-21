@@ -15,7 +15,7 @@ export interface MachineStats {
 })
 export class MachineService {
 
-  private readonly API = 'http://localhost:8080/machines';
+  private readonly API = 'https://agrosoft-9bmj.onrender.com/machines';
 
   constructor(private http: HttpClient) {}
 

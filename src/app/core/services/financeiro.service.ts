@@ -16,7 +16,7 @@ export interface FinancialStats {
 })
 export class FinancialService {
 
-  private readonly API = 'http://localhost:8080/financial-transactions';
+  private readonly API = 'https://agrosoft-9bmj.onrender.com/financial-transactions';
 
   constructor(private http: HttpClient) {}
 

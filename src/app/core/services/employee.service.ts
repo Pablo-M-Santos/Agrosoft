@@ -15,7 +15,7 @@ export interface EmployeeStats {
 })
 export class EmployeeService {
 
-  private readonly API = 'http://localhost:8080/employees';
+  private readonly API = 'https://agrosoft-9bmj.onrender.com/employees';
 
   constructor(private http: HttpClient) {}
 
