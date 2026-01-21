@@ -3,6 +3,18 @@ import { MainLayout } from './layout/main-layout/main-layout';
 
 export const routes: Routes = [
   {
+    path: '',
+    component: MainLayout,
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/usuario/usuario')
+            .then(m => m.Usuario),
+      }
+    ]
+  },
+  {
     path: 'funcionarios',
     component: MainLayout,
     children: [
