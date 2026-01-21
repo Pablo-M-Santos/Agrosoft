@@ -1,3 +1,7 @@
+[build]
+  command = "npm install && npx ng build"
+  publish = "dist/agrosoft-frontend"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
