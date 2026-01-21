@@ -1,0 +1,15 @@
+/* No seu arquivo de estilos GLOBAL */
+.custom-dialog-container .mat-mdc-dialog-container {
+    --mdc-dialog-container-shape: 16px; /* Arredondamento */
+}
+
+.custom-dialog-container .mat-mdc-dialog-surface {
+    overflow: visible !important; /* Remove o scroll do container principal */
+}
+
+/* Garante que o conteúdo interno se expanda */
+.custom-dialog-container mat-dialog-content {
+    max-height: none !important; 
+    overflow: visible !important;
+    padding: 20px !important;
+}

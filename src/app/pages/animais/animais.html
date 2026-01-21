@@ -1,0 +1,15 @@
+<div class="cards-container">
+    <app-card title="Total de animais" [value]="cards.total" icon="pets" iconColor="#3B82F6"></app-card>
+    <app-card title="Na fazenda" [value]="cards.active" icon="home" iconColor="#22C55E"></app-card>
+    <app-card title="Vendidos" [value]="cards.sold" icon="sell" iconColor="#EF4444"></app-card>
+    <app-card title="Em tratamento" [value]="cards.underCare" icon="medical_services" iconColor="#F59E0B"></app-card>
+</div>
+
+<div class="table-header">
+    <h2>Animais</h2>
+    <p>Gerencie animais, tipos, status e responsáveis.</p>
+</div>
+
+<app-data-table [columns]="columns" [dataSource]="animals" [statusMap]="statusMap" (edit)="onEdit($event)"
+    (delete)="onDelete($event)">
+</app-data-table>

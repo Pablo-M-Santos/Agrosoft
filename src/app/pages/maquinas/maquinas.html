@@ -1,0 +1,19 @@
+<div class="cards-container">
+  <app-card title="Total de máquinas" [value]="cards.total" icon="build" iconColor="#3B82F6"></app-card>
+  <app-card title="Máquinas Operacionais" [value]="cards.operational" icon="check_circle" iconColor="#22C55E"></app-card>
+  <app-card title="Em Manutenção" [value]="cards.underMaintenance" icon="build_circle" iconColor="#F59E0B"></app-card>
+  <app-card title="Máquinas Inativas" [value]="cards.inactive" icon="cancel" iconColor="#EF4444"></app-card>
+</div>
+
+<div class="table-header">
+  <h2>Máquinas</h2>
+  <p>Gerencie máquinas, status e atribuições.</p>
+</div>
+
+<app-data-table 
+  [columns]="columns" 
+  [dataSource]="machines" 
+  [statusMap]="statusMap" 
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)">
+</app-data-table>
