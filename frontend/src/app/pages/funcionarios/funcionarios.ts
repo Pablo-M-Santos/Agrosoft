@@ -8,13 +8,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { EmployeeFormDialog } from '../../shared/components/employee-form-dialog/employee-form-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-funcionario',
   standalone: true,
-  imports: [CommonModule, Card, DataTable, EmployeeFormDialog, ConfirmDialogComponent, MatSnackBarModule, MatPaginatorModule, MatIconModule],
+  imports: [CommonModule, Card, DataTable, MatSnackBarModule, MatPaginatorModule, MatIconModule],
   templateUrl: './funcionarios.html',
   styleUrls: ['./funcionarios.css']
 })
