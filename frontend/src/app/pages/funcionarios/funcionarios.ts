@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-funcionario',
@@ -101,15 +102,16 @@ export class Funcionario implements OnInit {
               this.showNotification('Funcionário atualizado com sucesso!');
               this.refreshData();
             },
-            error: (err) => console.error('Erro ao atualizar', err)
+            error: (err) => this.handleSaveError(err, 'atualizar funcionário')
           });
         } else {
           this.employeeService.create(result).subscribe({
             next: () => {
               this.showNotification('Funcionário cadastrado com sucesso!');
+              this.currentPage = 0;
               this.refreshData();
             },
-            error: (err) => console.error('Erro ao cadastrar', err)
+            error: (err) => this.handleSaveError(err, 'cadastrar funcionário')
           });
         }
       }
@@ -152,6 +154,21 @@ export class Funcionario implements OnInit {
       verticalPosition: 'top',
       panelClass: isError ? ['snackbar-error'] : ['snackbar-success']
     });
+  }
+
+  private handleSaveError(error: unknown, action: string): void {
+    const httpError = error as HttpErrorResponse;
+    const fieldErrors = httpError?.error?.fieldErrors;
+
+    if (fieldErrors && typeof fieldErrors === 'object') {
+      const messages = Object.values(fieldErrors).filter(Boolean);
+      const message = messages.length ? messages.join(' ') : `Erro ao ${action}.`;
+      this.showNotification(message, true);
+      return;
+    }
+
+    const apiMessage = httpError?.error?.message;
+    this.showNotification(apiMessage || `Erro ao ${action}.`, true);
   }
 
   private refreshData(): void {

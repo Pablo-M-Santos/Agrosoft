@@ -10,6 +10,7 @@ export interface Employee {
   photoUrl?: string;
   driverLicenseCategory?: string;
   workArea: string;
+  relatedMachinery?: string;
   salary: number;
   hireDate: Date;
   terminationDate?: Date;
