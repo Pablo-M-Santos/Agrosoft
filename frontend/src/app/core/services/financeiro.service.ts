@@ -10,13 +10,11 @@ export interface FinancialStats {
   balance: number;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FinancialService {
-
-  private readonly API = 'https://agrosoft-9bmj.onrender.com/financial-transactions';
+  private readonly API = 'http://localhost:8080/financial-transactions';
 
   constructor(private http: HttpClient) {}
 

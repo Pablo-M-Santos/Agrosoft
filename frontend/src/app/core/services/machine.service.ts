@@ -11,11 +11,10 @@ export interface MachineStats {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MachineService {
-
-  private readonly API = 'https://agrosoft-9bmj.onrender.com/machines';
+  private readonly API = 'http://localhost:8080/machines';
 
   constructor(private http: HttpClient) {}
 

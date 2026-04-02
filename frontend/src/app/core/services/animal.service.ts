@@ -11,11 +11,10 @@ export interface AnimalStats {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AnimalService {
-
-  private readonly API = 'https://agrosoft-9bmj.onrender.com/animals';
+  private readonly API = 'http://localhost:8080/animals';
 
   constructor(private http: HttpClient) {}
 
