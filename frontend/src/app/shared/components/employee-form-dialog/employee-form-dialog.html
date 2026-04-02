@@ -1,0 +1,107 @@
+<div mat-dialog-title class="dialog-header">
+    <h2>{{ isEdit ? 'Editar Funcionário' : 'Novo Funcionário' }}</h2>
+    <button mat-icon-button class="btn-close-header" (click)="close()">
+        <span class="material-icons">close</span>
+    </button>
+</div>
+<div class="dialog-content">
+    <form [formGroup]="form" class="employee-form">
+
+        <div class="form-section-title">
+            <span class="material-icons">fingerprint</span> Identificação e Contato
+        </div>
+        <div class="form-grid-3">
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Nome Completo</mat-label>
+                <input matInput formControlName="fullName">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>E-mail</mat-label>
+                <input matInput formControlName="email" type="email">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Telefone</mat-label>
+                <input matInput formControlName="phone" mask="(00) 00000-0000" [dropSpecialCharacters]="true">
+            </mat-form-field>
+        </div>
+        <div class="form-grid-3">
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>CPF</mat-label>
+                <input matInput formControlName="cpf" mask="000.000.000-00" [showMaskTyped]="false"
+                    [dropSpecialCharacters]="true">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>RG</mat-label>
+                <input matInput formControlName="rg" mask="00.000.000-0" [dropSpecialCharacters]="true">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Data de Nascimento</mat-label>
+                <input matInput [matDatepicker]="birthPicker" formControlName="birthDate">
+                <mat-datepicker-toggle matSuffix [for]="birthPicker"></mat-datepicker-toggle>
+                <mat-datepicker #birthPicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
+        <div class="form-section-title mt-10">
+            <span class="material-icons" style="color: #f97316;">work</span> Contrato e Função
+        </div>
+        <div class="form-grid-3">
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Área de Trabalho</mat-label>
+                <input matInput formControlName="workArea">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Salário</mat-label>
+                <input matInput type="number" formControlName="salary">
+                <span matPrefix>R$&nbsp;</span>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="compact-field">
+                <mat-label>Tipo Contrato</mat-label>
+                <mat-select formControlName="contractType">
+                    <mat-option value="CLT">CLT</mat-option>
+                    <mat-option value="PJ">PJ</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="form-grid-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Data Contratação</mat-label>
+                <input matInput [matDatepicker]="hirePicker" formControlName="hireDate">
+                <mat-datepicker-toggle matSuffix [for]="hirePicker"></mat-datepicker-toggle>
+                <mat-datepicker #hirePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Categoria CNH</mat-label>
+                <mat-select formControlName="driverLicenseCategory">
+                    <mat-option *ngFor="let cat of categoriesCNH" [value]="cat">{{cat}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="isEdit" class="compact-field">
+                <mat-label>Status do Funcionário</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="ACTIVE">Ativo</mat-option>
+                    <mat-option value="ON_LEAVE">Em Licença</mat-option>
+                    <mat-option value="INACTIVE">Inativo</mat-option>
+                    <mat-option *ngIf="form.get('status')?.value === 'TERMINATED'" value="TERMINATED">
+                        Demitido (Encerrado)
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="form-section-title mt-10">
+            <span class="material-icons" style="color: #6366f1;">location_on</span> Endereço
+        </div>
+        <mat-form-field appearance="outline" class="full-width compact-field">
+            <mat-label>Endereço Residencial Completo</mat-label>
+            <textarea matInput formControlName="address" rows="1"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+            <button type="button" mat-button class="btn-cancel" (click)="close()">Cancelar</button>
+            <button type="submit" mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="save()">
+                <span class="material-icons">save</span> {{ isEdit ? 'Atualizar' : 'Salvar Funcionário' }}
+            </button>
+        </div>
+    </form>
+</div>

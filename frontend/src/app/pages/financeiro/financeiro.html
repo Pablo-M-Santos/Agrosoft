@@ -1,0 +1,24 @@
+<div class="cards-container">
+    <app-card title="Saldo Geral" [value]="(cards.balance | currency:'BRL')!" icon="account_balance_wallet"
+        [iconColor]="cards.balance >= 0 ? '#3B82F6' : '#EF4444'">
+    </app-card>
+
+    <app-card title="Receitas" [value]="(cards.revenues | currency:'BRL')!" icon="trending_up" iconColor="#22C55E">
+    </app-card>
+
+    <app-card title="Despesas" [value]="(cards.expenses | currency:'BRL')!" icon="trending_down" iconColor="#EF4444">
+    </app-card>
+
+    <app-card title="Total Movimentado" [value]="(cards.total | currency:'BRL')!" icon="calculate"
+        [iconColor]="cards.total >= 0 ? '#16A34A' : '#EF4444'">
+    </app-card>
+</div>
+
+<div class="table-header">
+    <h2>Financeiro</h2>
+    <p>Controle de receitas, despesas e movimentações financeiras.</p>
+</div>
+
+<app-data-table [columns]="columns" [dataSource]="transactions" [statusMap]="statusMap" (edit)="onEdit($event)"
+    (delete)="onDelete($event)">
+</app-data-table>
