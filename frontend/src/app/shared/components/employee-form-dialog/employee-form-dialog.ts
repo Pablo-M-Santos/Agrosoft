@@ -1,6 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +31,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     provideNativeDateAdapter(),
-    provideNgxMask()
+    provideNgxMask(),
   ],
   imports: [
     CommonModule,
@@ -35,10 +44,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     MatNativeDateModule,
     MatButtonModule,
     MatSnackBarModule,
-    NgxMaskDirective
+    NgxMaskDirective,
   ],
   templateUrl: './employee-form-dialog.html',
-  styleUrls: ['./employee-form-dialog.css']
+  styleUrls: ['./employee-form-dialog.css'],
 })
 export class EmployeeFormDialog implements OnInit {
   form: FormGroup;
@@ -51,16 +60,30 @@ export class EmployeeFormDialog implements OnInit {
     private dialogRef: MatDialogRef<EmployeeFormDialog>,
     private snackBar: MatSnackBar,
     private employeeService: EmployeeService,
-    @Inject(MAT_DIALOG_DATA) public data: Employee
+    @Inject(MAT_DIALOG_DATA) public data: Employee,
   ) {
     this.isEdit = !!data;
     this.form = this.fb.group({
       id: [data?.id || null],
       fullName: [this.data?.fullName || '', [Validators.required, Validators.minLength(3)]],
-      email: [this.data?.email || '', [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
-      cpf: [this.data?.cpf || '', [Validators.required, this.cpfValidator()], [this.cpfAvailabilityValidator()]],
+      email: [
+        this.data?.email || '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
+        ],
+      ],
+      cpf: [
+        this.data?.cpf || '',
+        [Validators.required, this.cpfValidator()],
+        [this.cpfAvailabilityValidator()],
+      ],
       rg: [data?.rg || ''],
-      phone: [data?.phone || '', [Validators.required, Validators.minLength(10), Validators.maxLength(15)]],
+      phone: [
+        data?.phone || '',
+        [Validators.required, Validators.minLength(10), Validators.maxLength(15)],
+      ],
       birthDate: [data?.birthDate || null, [Validators.required, this.minimumAgeValidator(18)]],
       workArea: [data?.workArea || ''],
       relatedMachinery: [data?.relatedMachinery || ''],
@@ -69,11 +92,11 @@ export class EmployeeFormDialog implements OnInit {
       status: [data?.status || 'ACTIVE', [Validators.required]],
       driverLicenseCategory: [data?.driverLicenseCategory || null],
       hireDate: [data?.hireDate || new Date(), [Validators.required]],
-      address: [data?.address || '', [Validators.required]]
+      address: [data?.address || '', [Validators.required]],
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   save(): void {
     if (this.form.pending) {
@@ -110,7 +133,11 @@ export class EmployeeFormDialog implements OnInit {
       }
 
       const today = new Date();
-      const minAllowedDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.getDate());
+      const minAllowedDate = new Date(
+        today.getFullYear() - minAge,
+        today.getMonth(),
+        today.getDate(),
+      );
       minAllowedDate.setHours(0, 0, 0, 0);
       value.setHours(0, 0, 0, 0);
 
@@ -139,7 +166,9 @@ export class EmployeeFormDialog implements OnInit {
       const firstDigit = this.calculateCpfDigit(cpf.substring(0, 9), 10);
       const secondDigit = this.calculateCpfDigit(cpf.substring(0, 9) + firstDigit, 11);
 
-      return cpf === `${cpf.substring(0, 9)}${firstDigit}${secondDigit}` ? null : { cpfInvalid: true };
+      return cpf === `${cpf.substring(0, 9)}${firstDigit}${secondDigit}`
+        ? null
+        : { cpfInvalid: true };
     };
   }
 
@@ -147,13 +176,18 @@ export class EmployeeFormDialog implements OnInit {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const cpf = this.normalizeCpf(control.value);
 
-      if (!cpf || cpf.length !== 11 || control.hasError('required') || control.hasError('cpfInvalid')) {
+      if (
+        !cpf ||
+        cpf.length !== 11 ||
+        control.hasError('required') ||
+        control.hasError('cpfInvalid')
+      ) {
         return of(null);
       }
 
       return this.employeeService.checkCpfAvailability(cpf, this.data?.id).pipe(
         map((isAvailable) => (isAvailable ? null : { cpfTaken: true })),
-        catchError(() => of(null))
+        catchError(() => of(null)),
       );
     };
   }
@@ -180,7 +214,7 @@ export class EmployeeFormDialog implements OnInit {
 
   private formatDate(date: any): string {
     const d = new Date(date);
-    return d.toISOString().split('T')[0]; 
+    return d.toISOString().split('T')[0];
   }
 
   close(): void {
@@ -192,7 +226,7 @@ export class EmployeeFormDialog implements OnInit {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['snackbar-error']
+      panelClass: ['snackbar-error'],
     });
   }
 

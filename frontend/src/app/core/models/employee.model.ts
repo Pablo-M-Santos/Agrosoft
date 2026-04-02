@@ -3,7 +3,7 @@ export interface Employee {
   fullName: string;
   email: string;
   cpf: string;
-  rg?: string;          
+  rg?: string;
   phone?: string;
   birthDate?: Date;
   address?: string;

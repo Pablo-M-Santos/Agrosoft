@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+
+.snackbar-success,
+.snackbar-error {
+	border-radius: 14px !important;
+	padding: 14px 18px !important;
+	color: #fff !important;
+	font-weight: 600;
+	box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18) !important;
+}
+
+.snackbar-success {
+	background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+}
+
+.snackbar-error {
+	background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+}
+
+.snackbar-success .mat-mdc-snack-bar-label,
+.snackbar-error .mat-mdc-snack-bar-label {
+	color: #fff !important;
+}
+
+.snackbar-success .mdc-button__label,
+.snackbar-error .mdc-button__label {
+	color: #fff !important;
+	font-weight: 700;
+}

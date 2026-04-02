@@ -17,10 +17,9 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, Card, DataTable, MatSnackBarModule, MatPaginatorModule, MatIconModule],
   templateUrl: './funcionarios.html',
-  styleUrls: ['./funcionarios.css']
+  styleUrls: ['./funcionarios.css'],
 })
 export class Funcionario implements OnInit {
-
   columns: TableColumn<Employee>[] = [
     { key: 'fullName', label: 'NOME', type: 'text' },
     { key: 'workArea', label: 'ÁREA', type: 'text' },
@@ -28,7 +27,7 @@ export class Funcionario implements OnInit {
     { key: 'phone', label: 'TELEFONE', type: 'phone' },
     { key: 'contractType', label: 'CONTRATO', type: 'text' },
     { key: 'statusText', label: 'STATUS', type: 'status' },
-    { key: 'actions', label: 'AÇÕES', type: 'actions' }
+    { key: 'actions', label: 'AÇÕES', type: 'actions' },
   ];
 
   funcionarios: Employee[] = [];
@@ -37,7 +36,7 @@ export class Funcionario implements OnInit {
     ACTIVE: 'Ativo',
     INACTIVE: 'Inativo',
     ON_LEAVE: 'Em Licença',
-    TERMINATED: 'Rescindido'
+    TERMINATED: 'Rescindido',
   };
 
   statusMap = this.statusTranslation;
@@ -46,43 +45,43 @@ export class Funcionario implements OnInit {
     ACTIVE: 'ativo',
     INACTIVE: 'inativo',
     ON_LEAVE: 'em-licenca',
-    TERMINATED: 'terminado'
+    TERMINATED: 'terminado',
   };
 
-  statusColors: { [key: string]: { background: string, text: string } } = {
+  statusColors: { [key: string]: { background: string; text: string } } = {
     ACTIVE: { background: '#DCFCE7', text: '#16A34A' },
     INACTIVE: { background: '#FEE2E2', text: '#DC2626' },
     ON_LEAVE: { background: '#FEF3C7', text: '#D97706' },
-    TERMINATED: { background: '#F3F4F6', text: '#6B7280' }
+    TERMINATED: { background: '#F3F4F6', text: '#6B7280' },
   };
-
 
   cards = {
     total: 0,
     active: 0,
     inactive: 0,
-    onLeave: 0
+    onLeave: 0,
   };
 
   totalElements = 0;
   currentPage = 0;
   pageSize = 9;
 
-  constructor(private employeeService: EmployeeService,
-    private cdr: ChangeDetectorRef, private dialog: MatDialog, private snackBar: MatSnackBar) { }
-
+  constructor(
+    private employeeService: EmployeeService,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {}
 
   ngOnInit(): void {
-
     this.loadEmployees();
-
 
     this.employeeService.getStats().subscribe({
       next: (stats) => {
         this.cards = stats;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Erro ao carregar estatísticas', err)
+      error: (err) => console.error('Erro ao carregar estatísticas', err),
     });
   }
 
@@ -91,10 +90,10 @@ export class Funcionario implements OnInit {
       width: '100%',
       maxWidth: '1450px',
       data: employee ? { ...employee } : null,
-      panelClass: 'custom-dialog-container'
+      panelClass: 'custom-dialog-container',
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (result.id) {
           this.employeeService.update(result.id, result).subscribe({
@@ -102,7 +101,7 @@ export class Funcionario implements OnInit {
               this.showNotification('Funcionário atualizado com sucesso!');
               this.refreshData();
             },
-            error: (err) => this.handleSaveError(err, 'atualizar funcionário')
+            error: (err) => this.handleSaveError(err, 'atualizar funcionário'),
           });
         } else {
           this.employeeService.create(result).subscribe({
@@ -111,7 +110,7 @@ export class Funcionario implements OnInit {
               this.currentPage = 0;
               this.refreshData();
             },
-            error: (err) => this.handleSaveError(err, 'cadastrar funcionário')
+            error: (err) => this.handleSaveError(err, 'cadastrar funcionário'),
           });
         }
       }
@@ -127,11 +126,11 @@ export class Funcionario implements OnInit {
       width: '650px',
       data: {
         title: 'Deletar Funcionário',
-        itemName: employee.fullName
-      }
+        itemName: employee.fullName,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.employeeService.delete(employee.id!).subscribe({
           next: () => {
@@ -141,7 +140,7 @@ export class Funcionario implements OnInit {
           error: (err) => {
             console.error('Erro ao excluir', err);
             this.showNotification('Erro ao excluir funcionário.', true);
-          }
+          },
         });
       }
     });
@@ -152,7 +151,7 @@ export class Funcionario implements OnInit {
       duration: 3500,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: isError ? ['snackbar-error'] : ['snackbar-success']
+      panelClass: isError ? ['snackbar-error'] : ['snackbar-success'],
     });
   }
 
@@ -178,35 +177,30 @@ export class Funcionario implements OnInit {
       next: (stats) => {
         this.cards = stats;
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 
   private loadEmployees(): void {
-
     this.employeeService.list(this.currentPage, this.pageSize).subscribe({
       next: (response: any) => {
-
         this.funcionarios = response.content.map((emp: any) => ({
           ...emp,
           statusText: this.statusTranslation[emp.status] || emp.status,
           statusColor: this.statusColors[emp.status]?.background || '#E5E7EB',
-          statusTextColor: this.statusColors[emp.status]?.text || '#374151'
+          statusTextColor: this.statusColors[emp.status]?.text || '#374151',
         }));
 
         this.totalElements = response.totalElements;
         this.cdr.detectChanges();
-      }
+      },
     });
   }
-
-
 
   get pageNumbers(): number[] {
     const totalPages = Math.ceil(this.totalElements / this.pageSize);
     return Array.from({ length: totalPages }, (_, i) => i);
   }
-
 
   goToPage(pageIndex: number): void {
     this.currentPage = pageIndex;
@@ -216,5 +210,4 @@ export class Funcionario implements OnInit {
     this.currentPage = pageIndex;
     this.loadEmployees();
   }
-
 }
