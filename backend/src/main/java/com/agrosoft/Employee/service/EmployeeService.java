@@ -31,8 +31,10 @@ public class EmployeeService {
 
 
     public EmployeeResponseDTO create(CreateEmployeeRequestDTO dto) {
+        String cpf = normalizeCpf(dto.getCpf());
+        assertCpfAvailable(cpf, null);
 
-        Employee employee = buildEmployee(dto);
+        Employee employee = buildEmployee(dto, cpf);
 
         Employee savedEmployee = employeeRepository.save(employee);
 
@@ -64,7 +66,11 @@ public class EmployeeService {
         Employee employee = findEmployeeById(id);
 
         if (dto.getEmail() != null) employee.setEmail(dto.getEmail());
-        if (dto.getCpf() != null) employee.setCpf(dto.getCpf());
+        if (dto.getCpf() != null) {
+            String cpf = normalizeCpf(dto.getCpf());
+            assertCpfAvailable(cpf, id);
+            employee.setCpf(cpf);
+        }
         if (dto.getRg() != null) employee.setRg(dto.getRg());
         if (dto.getBirthDate() != null) employee.setBirthDate(dto.getBirthDate());
         if (dto.getWorkArea() != null) employee.setWorkArea(dto.getWorkArea());
@@ -171,14 +177,27 @@ public class EmployeeService {
         return stats;
     }
 
+    public boolean isCpfAvailable(String cpf, UUID excludeId) {
+        String normalizedCpf = normalizeCpf(cpf);
+
+        if (normalizedCpf == null || normalizedCpf.length() != 11) {
+            return false;
+        }
+
+        if (excludeId == null) {
+            return !employeeRepository.existsByCpf(normalizedCpf);
+        }
+
+        return !employeeRepository.existsByCpfAndIdNot(normalizedCpf, excludeId);
+    }
 
 
-    private Employee buildEmployee(CreateEmployeeRequestDTO dto) {
+    private Employee buildEmployee(CreateEmployeeRequestDTO dto, String cpf) {
         Employee employee = new Employee();
 
         employee.setFullName(dto.getFullName());
         employee.setEmail(dto.getEmail());
-        employee.setCpf(dto.getCpf());
+        employee.setCpf(cpf);
         employee.setRg(dto.getRg());
         employee.setBirthDate(dto.getBirthDate());
         employee.setPhone(dto.getPhone());
@@ -219,6 +238,20 @@ public class EmployeeService {
         dto.setUpdatedAt(employee.getUpdatedAt());
 
         return dto;
+    }
+
+    private void assertCpfAvailable(String cpf, UUID excludeId) {
+        if (!isCpfAvailable(cpf, excludeId)) {
+            throw new BusinessException("CPF já cadastrado.");
+        }
+    }
+
+    private String normalizeCpf(String cpf) {
+        if (cpf == null) {
+            return null;
+        }
+
+        return cpf.replaceAll("\\D", "");
     }
 
 }

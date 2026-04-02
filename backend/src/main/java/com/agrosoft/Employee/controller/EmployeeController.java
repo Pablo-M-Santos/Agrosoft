@@ -81,6 +81,15 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.findAll(status, pageable));
     }
 
+        @GetMapping("/check-cpf")
+        @Operation(summary = "Check CPF availability", description = "Returns whether a CPF is available for registration")
+        public ResponseEntity<Boolean> checkCpfAvailability(
+                        @RequestParam String cpf,
+                        @RequestParam(required = false) UUID id
+        ) {
+                return ResponseEntity.ok(employeeService.isCpfAvailable(cpf, id));
+        }
+
 
 
     @GetMapping("/{id}")

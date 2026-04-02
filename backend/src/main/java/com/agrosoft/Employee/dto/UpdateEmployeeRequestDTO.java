@@ -3,6 +3,7 @@ package com.agrosoft.Employee.dto;
 import com.agrosoft.Employee.domain.ContractType;
 import com.agrosoft.Employee.domain.DriverLicenseCategory;
 import com.agrosoft.Employee.domain.EmployeeStatus;
+import com.agrosoft.Employee.validation.ValidCpf;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,10 +22,7 @@ public class UpdateEmployeeRequestDTO {
     @Size(max = 100)
     private String email;
 
-    @Pattern(
-            regexp = "\\d{11}",
-            message = "CPF must contain exactly 11 digits"
-    )
+    @ValidCpf(message = "CPF inválido.")
     private String cpf;
 
     @Size(max = 20)

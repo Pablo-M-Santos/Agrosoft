@@ -2,6 +2,7 @@ package com.agrosoft.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -36,6 +37,34 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+        @ExceptionHandler(DataIntegrityViolationException.class)
+        public ResponseEntity<ValidationErrorResponse> handleDataIntegrityViolation(
+                        DataIntegrityViolationException ex,
+                        HttpServletRequest request
+        ) {
+                Map<String, String> errors = new HashMap<>();
+                String message = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage();
+                String normalizedMessage = message == null ? "" : message.toLowerCase();
+
+                if (normalizedMessage.contains("cpf")) {
+                        errors.put("cpf", "CPF já cadastrado.");
+                } else if (normalizedMessage.contains("email")) {
+                        errors.put("email", "E-mail já cadastrado.");
+                } else {
+                        errors.put("general", "Dados duplicados ou inválidos.");
+                }
+
+                ValidationErrorResponse response = new ValidationErrorResponse(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Validation Error",
+                                "Invalid request data",
+                                request.getRequestURI(),
+                                errors
+                );
+
+                return ResponseEntity.badRequest().body(response);
+        }
 
 
     @ExceptionHandler(BusinessException.class)
