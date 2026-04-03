@@ -90,6 +90,15 @@ public class EmployeeController {
                 return ResponseEntity.ok(employeeService.isCpfAvailable(cpf, id));
         }
 
+        @GetMapping("/check-email")
+        @Operation(summary = "Check email availability", description = "Returns whether an email is available for registration")
+        public ResponseEntity<Boolean> checkEmailAvailability(
+                        @RequestParam String email,
+                        @RequestParam(required = false) UUID id
+        ) {
+                return ResponseEntity.ok(employeeService.isEmailAvailable(email, id));
+        }
+
 
 
     @GetMapping("/{id}")

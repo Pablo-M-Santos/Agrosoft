@@ -33,6 +33,7 @@ public class EmployeeService {
     public EmployeeResponseDTO create(CreateEmployeeRequestDTO dto) {
         String cpf = normalizeCpf(dto.getCpf());
         assertCpfAvailable(cpf, null);
+        assertEmailAvailable(dto.getEmail(), null);
 
         Employee employee = buildEmployee(dto, cpf);
 
@@ -65,7 +66,10 @@ public class EmployeeService {
     public EmployeeResponseDTO update(UUID id, UpdateEmployeeRequestDTO dto) {
         Employee employee = findEmployeeById(id);
 
-        if (dto.getEmail() != null) employee.setEmail(dto.getEmail());
+        if (dto.getEmail() != null) {
+            assertEmailAvailable(dto.getEmail(), id);
+            employee.setEmail(dto.getEmail());
+        }
         if (dto.getCpf() != null) {
             String cpf = normalizeCpf(dto.getCpf());
             assertCpfAvailable(cpf, id);
@@ -191,6 +195,18 @@ public class EmployeeService {
         return !employeeRepository.existsByCpfAndIdNot(normalizedCpf, excludeId);
     }
 
+    public boolean isEmailAvailable(String email, UUID excludeId) {
+        if (email == null || email.isEmpty()) {
+            return false;
+        }
+
+        if (excludeId == null) {
+            return !employeeRepository.existsByEmail(email);
+        }
+
+        return !employeeRepository.existsByEmailAndIdNot(email, excludeId);
+    }
+
 
     private Employee buildEmployee(CreateEmployeeRequestDTO dto, String cpf) {
         Employee employee = new Employee();
@@ -243,6 +259,12 @@ public class EmployeeService {
     private void assertCpfAvailable(String cpf, UUID excludeId) {
         if (!isCpfAvailable(cpf, excludeId)) {
             throw new BusinessException("CPF já cadastrado.");
+        }
+    }
+
+    private void assertEmailAvailable(String email, UUID excludeId) {
+        if (!isEmailAvailable(email, excludeId)) {
+            throw new BusinessException("Email já cadastrado.");
         }
     }
 

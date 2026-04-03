@@ -36,13 +36,13 @@ public class CreateEmployeeRequestDTO {
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
 
+    @NotBlank(message = "Phone is required")
     @Pattern(
             regexp = "\\d{10,15}",
             message = "Phone must contain 10 to 15 digits"
     )
     private String phone;
 
-    @NotBlank(message = "Address is required")
     private String address;
 
     @Size(max = 255)
