@@ -146,12 +146,7 @@
 
     <div class="form-actions">
       <button type="button" mat-button class="btn-cancel" (click)="close()">Cancelar</button>
-      <button
-        type="submit"
-        mat-raised-button
-        class="btn-save"
-        [disabled]="form.pending"
-      >
+      <button type="submit" mat-raised-button class="btn-save" [disabled]="form.pending">
         <span class="material-icons">save</span> {{ isEdit ? 'Atualizar' : 'Salvar Funcionário' }}
       </button>
     </div>
