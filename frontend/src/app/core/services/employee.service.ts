@@ -49,6 +49,16 @@ export class EmployeeService {
     return this.http.get<boolean>(`${this.API}/check-cpf`, { params });
   }
 
+  checkEmailAvailability(email: string, employeeId?: string): Observable<boolean> {
+    let params = new HttpParams().set('email', email);
+
+    if (employeeId) {
+      params = params.set('id', employeeId);
+    }
+
+    return this.http.get<boolean>(`${this.API}/check-email`, { params });
+  }
+
   update(id: string, employee: Employee): Observable<Employee> {
     return this.http.put<Employee>(`${this.API}/${id}`, employee);
   }

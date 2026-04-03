@@ -73,6 +73,7 @@ export class EmployeeFormDialog implements OnInit {
           Validators.email,
           Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),
         ],
+        [this.emailAvailabilityValidator()],
       ],
       cpf: [
         this.data?.cpf || '',
@@ -92,7 +93,7 @@ export class EmployeeFormDialog implements OnInit {
       status: [data?.status || 'ACTIVE', [Validators.required]],
       driverLicenseCategory: [data?.driverLicenseCategory || null],
       hireDate: [data?.hireDate || new Date(), [Validators.required]],
-      address: [data?.address || '', [Validators.required]],
+      address: [data?.address || '', []],
     });
   }
 
@@ -105,7 +106,6 @@ export class EmployeeFormDialog implements OnInit {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.showValidationNotification();
       return;
     }
 
@@ -117,6 +117,17 @@ export class EmployeeFormDialog implements OnInit {
     if (payload.hireDate) {
       payload.hireDate = this.formatDate(payload.hireDate);
     }
+
+    this.snackBar.open(
+      this.isEdit ? 'Funcionário atualizado com sucesso!' : 'Funcionário cadastrado com sucesso!',
+      'Fechar',
+      {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['snackbar-success'],
+      },
+    );
 
     this.dialogRef.close(payload);
   }
@@ -192,6 +203,26 @@ export class EmployeeFormDialog implements OnInit {
     };
   }
 
+  emailAvailabilityValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      const email = control.value;
+
+      if (
+        !email ||
+        control.hasError('required') ||
+        control.hasError('email') ||
+        control.hasError('pattern')
+      ) {
+        return of(null);
+      }
+
+      return this.employeeService.checkEmailAvailability(email, this.data?.id).pipe(
+        map((isAvailable) => (isAvailable ? null : { emailTaken: true })),
+        catchError(() => of(null)),
+      );
+    };
+  }
+
   private calculateCpfDigit(base: string, weight: number): number {
     let sum = 0;
 
@@ -219,15 +250,6 @@ export class EmployeeFormDialog implements OnInit {
 
   close(): void {
     this.dialogRef.close();
-  }
-
-  private showValidationNotification(): void {
-    this.snackBar.open('Preencha os campos obrigatórios destacados.', 'Fechar', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: ['snackbar-error'],
-    });
   }
 
   hasError(controlName: string, errorName?: string): boolean {

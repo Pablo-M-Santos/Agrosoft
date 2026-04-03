@@ -25,6 +25,7 @@
         <mat-error *ngIf="hasError('email', 'email') || hasError('email', 'pattern')"
           >Informe um e-mail válido.</mat-error
         >
+        <mat-error *ngIf="hasError('email', 'emailTaken')">E-mail já cadastrado.</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="compact-field">
         <mat-label>Telefone</mat-label>
@@ -141,7 +142,6 @@
     <mat-form-field appearance="outline" class="full-width compact-field">
       <mat-label>Endereço Residencial Completo</mat-label>
       <textarea matInput formControlName="address" rows="1"></textarea>
-      <mat-error *ngIf="hasError('address', 'required')">Endereço é obrigatório.</mat-error>
     </mat-form-field>
 
     <div class="form-actions">
@@ -150,7 +150,7 @@
         type="submit"
         mat-raised-button
         class="btn-save"
-        [disabled]="form.invalid || form.pending"
+        [disabled]="form.pending"
       >
         <span class="material-icons">save</span> {{ isEdit ? 'Atualizar' : 'Salvar Funcionário' }}
       </button>
