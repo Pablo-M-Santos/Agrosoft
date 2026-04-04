@@ -11,6 +11,7 @@ import com.agrosoft.exception.BusinessException;
 import com.agrosoft.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class MachineService {
         }
 
         return machines.stream()
+            .sorted(Comparator.comparing(Machine::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -73,6 +75,15 @@ public class MachineService {
         if (dto.getSerialNumber() != null) machine.setSerialNumber(dto.getSerialNumber());
         if (dto.getPurchaseValue() != null) machine.setPurchaseValue(dto.getPurchaseValue());
         if (dto.getPurchaseDate() != null) machine.setPurchaseDate(dto.getPurchaseDate());
+        if (dto.getStatus() != null) machine.setStatus(dto.getStatus());
+
+        if (dto.getAssignedEmployeeId() != null) {
+            Employee employee = employeeRepository.findById(dto.getAssignedEmployeeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+            machine.setAssignedEmployee(employee);
+        } else {
+            machine.setAssignedEmployee(null);
+        }
 
         return toResponseDTO(machineRepository.save(machine));
     }

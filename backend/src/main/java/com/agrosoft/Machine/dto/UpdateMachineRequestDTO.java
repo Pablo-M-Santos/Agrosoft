@@ -1,11 +1,13 @@
 package com.agrosoft.Machine.dto;
 
+import com.agrosoft.Machine.domain.MachineStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -35,4 +37,8 @@ public class UpdateMachineRequestDTO {
 
     @PastOrPresent(message = "Purchase date cannot be in the future")
     private LocalDate purchaseDate;
+
+    private MachineStatus status;
+
+    private UUID assignedEmployeeId;
 }
