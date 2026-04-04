@@ -26,7 +26,6 @@ mat-form-field {
   width: 100%;
 }
 
-
 .dialog-header {
   display: flex;
   justify-content: space-between;
@@ -42,7 +41,6 @@ mat-form-field {
   font-size: 1.25rem;
   font-weight: 600;
 }
-
 
 .btn-close-header {
   background-color: #ef4444;
@@ -72,61 +70,58 @@ mat-form-field {
   }
 }
 
-
 .form-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 ::ng-deep .mat-mdc-text-field-wrapper .mdc-notched-outline__leading,
 ::ng-deep .mat-mdc-text-field-wrapper .mdc-notched-outline__notch,
 ::ng-deep .mat-mdc-text-field-wrapper .mdc-notched-outline__trailing {
-    border-color: #d1d5db !important; 
+  border-color: #d1d5db !important;
 }
 
-
 .form-section-title {
-    display: flex;
-    align-items: center; 
-    gap: 8px;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 12px;
-    border-radius: 0px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+  border-radius: 0px;
 }
 
 .form-section-title .material-icons {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .mt-20 {
-    margin-top: 20px;
+  margin-top: 20px;
 }
-
 
 .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid #f3f4f6; 
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
 }
 
-
 .btn-save {
-    background-color: #16a34a !important; 
-    color: white !important;
+  background-color: #16a34a !important;
+  color: white !important;
 }
 
 .btn-cancel {
-    color: #6b7280 !important;
+  color: #6b7280 !important;
 }
 
-.btn-save .material-icons, .btn-cancel .material-icons {
-    font-size: 18px;
-    margin-right: 4px;
+.btn-save .material-icons,
+.btn-cancel .material-icons {
+  font-size: 18px;
+  margin-right: 4px;
 }
 
 .machine-picker {
@@ -227,7 +222,9 @@ mat-form-field {
   color: #0c4a6e;
   padding: 6px 10px;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .machine-tag:hover {
@@ -248,4 +245,3 @@ mat-form-field {
 .machine-tag-remove {
   font-size: 16px;
 }
-

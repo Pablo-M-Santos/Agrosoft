@@ -18,14 +18,14 @@ export class EmployeeService {
 
   constructor(private http: HttpClient) {}
 
-  list(page: number = 0, size: number = 9, status?: string): Observable<any> {
+  list(page: number = 0, size: number = 9, search?: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sort', 'createdAt,desc');
 
-    if (status) {
-      params = params.set('status', status);
+    if (search && search.trim()) {
+      params = params.set('search', search.trim());
     }
 
     return this.http.get<any>(this.API, { params });
@@ -63,7 +63,11 @@ export class EmployeeService {
     return this.http.put<Employee>(`${this.API}/${id}`, employee);
   }
 
-  delete(id: string): Observable<void> {
+  deactivate(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.deactivate(id);
   }
 }

@@ -36,7 +36,9 @@
     </div>
     <div class="detail-item">
       <span class="detail-label">Salário</span>
-      <span class="detail-value">{{ employee.salary ? (employee.salary | currency:'BRL') : '-' }}</span>
+      <span class="detail-value">{{
+        employee.salary ? (employee.salary | currency: 'BRL') : '-'
+      }}</span>
     </div>
     <div class="detail-item">
       <span class="detail-label">Status</span>
