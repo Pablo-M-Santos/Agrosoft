@@ -5,7 +5,12 @@ export interface Financial {
   type: 'REVENUE' | 'EXPENSE' | 'REVENUES';
   category: string;
   transactionDate: string;
+  createdAt?: string;
+  updatedAt?: string;
   typeText?: string;
-  statusColor?: string;
-  statusTextColor?: string;
+  typeColor?: string;
+  typeTextColor?: string;
+  categoryText?: string;
+  categoryColor?: string;
+  categoryTextColor?: string;
 }

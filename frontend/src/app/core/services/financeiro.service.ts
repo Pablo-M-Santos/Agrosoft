@@ -22,6 +22,18 @@ export class FinancialService {
     return this.http.get<Financial[]>(this.API);
   }
 
+  create(transaction: Partial<Financial>): Observable<Financial> {
+    return this.http.post<Financial>(this.API, transaction);
+  }
+
+  update(id: string, transaction: Partial<Financial>): Observable<Financial> {
+    return this.http.put<Financial>(`${this.API}/${id}`, transaction);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
   getStats(): Observable<FinancialStats> {
     return this.http.get<FinancialStats>(`${this.API}/stats`);
   }
