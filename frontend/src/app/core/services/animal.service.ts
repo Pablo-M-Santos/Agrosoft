@@ -22,6 +22,10 @@ export class AnimalService {
     return this.http.get<Animal[]>(this.API);
   }
 
+  create(animal: Partial<Animal>): Observable<Animal> {
+    return this.http.post<Animal>(this.API, animal);
+  }
+
   getStats(): Observable<AnimalStats> {
     return this.http.get<AnimalStats>(`${this.API}/stats`);
   }

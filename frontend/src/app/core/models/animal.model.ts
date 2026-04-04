@@ -3,6 +3,7 @@ export interface Animal {
   name: string;
   weight: number;
   entryDate?: string;
+  createdAt?: string;
 
   status: string;
 
