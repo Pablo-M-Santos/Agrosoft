@@ -76,9 +76,9 @@ public class EmployeeController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = EmployeeResponseDTO.class)))
     })
     public ResponseEntity<Page<EmployeeResponseDTO>> findAll(
-            @RequestParam(required = false) String status,
+                        @RequestParam(required = false) String search,
             Pageable pageable) {
-        return ResponseEntity.ok(employeeService.findAll(status, pageable));
+                return ResponseEntity.ok(employeeService.findAll(search, pageable));
     }
 
         @GetMapping("/check-cpf")

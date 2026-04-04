@@ -12,10 +12,10 @@ import com.agrosoft.exception.BusinessException;
 import com.agrosoft.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -42,18 +42,24 @@ public class EmployeeService {
         return toResponseDTO(savedEmployee);
     }
 
-    public Page<EmployeeResponseDTO> findAll(String statusFilter, Pageable pageable) {
-        Page<Employee> employeePage;
+    public Page<EmployeeResponseDTO> findAll(String search, Pageable pageable) {
+        Specification<Employee> specification = Specification.where(null);
 
-        if (statusFilter == null || statusFilter.isEmpty()) {
-            employeePage = employeeRepository.findAll(pageable);
-        } else {
-            EmployeeStatus status = EmployeeStatus.valueOf(statusFilter.toUpperCase());
-            employeePage = employeeRepository.findAllByStatus(status, pageable);
+        String normalizedSearch = normalizeFilter(search);
+        if (normalizedSearch != null) {
+            String likeValue = "%" + normalizedSearch.toLowerCase() + "%";
+
+            specification = specification.and((root, query, cb) -> cb.or(
+                    cb.like(cb.lower(root.get("fullName")), likeValue),
+                    cb.like(cb.lower(root.get("workArea")), likeValue),
+                    cb.like(cb.lower(root.get("email")), likeValue),
+                    cb.like(cb.lower(root.get("phone")), likeValue),
+                    cb.like(cb.lower(root.get("contractType").as(String.class)), likeValue),
+                    cb.like(cb.lower(root.get("status").as(String.class)), likeValue)
+            ));
         }
 
-
-        return employeePage.map(this::toResponseDTO);
+        return employeeRepository.findAll(specification, pageable).map(this::toResponseDTO);
     }
 
 
@@ -125,22 +131,17 @@ public class EmployeeService {
 
 
     public void deactivate(UUID id) {
-        Employee employee = findActiveEmployee(id);
-        employee.deactivate();
-        employeeRepository.save(employee);
-    }
+        Employee employee = findEmployeeById(id);
 
-    private Employee findActiveEmployee(UUID id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee not found")
-                );
+        if (employee.getStatus() != EmployeeStatus.INACTIVE) {
+            employee.setStatus(EmployeeStatus.INACTIVE);
 
-        if (employee.getStatus() == EmployeeStatus.INACTIVE) {
-            throw new BusinessException("Employee is inactive");
+            if (employee.getTerminationDate() == null) {
+                employee.setTerminationDate(LocalDate.now());
+            }
+
+            employeeRepository.save(employee);
         }
-
-        return employee;
     }
 
     private Employee findEmployeeById(UUID id) {
@@ -274,6 +275,15 @@ public class EmployeeService {
         }
 
         return cpf.replaceAll("\\D", "");
+    }
+
+    private String normalizeFilter(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String normalized = value.trim();
+        return normalized.isEmpty() ? null : normalized;
     }
 
 }
