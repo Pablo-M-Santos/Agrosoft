@@ -1,29 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
 
-.snackbar-success,
-.snackbar-error {
-  border-radius: 14px !important;
-  padding: 14px 18px !important;
-  color: #fff !important;
+.snackbar-success.mat-mdc-snack-bar-container,
+.snackbar-error.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-shape: 14px;
+  --mat-snack-bar-button-color: #ffffff;
+  color: #ffffff !important;
   font-weight: 600;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18) !important;
 }
 
-.snackbar-success {
+.snackbar-success.mat-mdc-snack-bar-container .mdc-snackbar__surface,
+.snackbar-error.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18) !important;
+  padding: 14px 18px !important;
+}
+
+.snackbar-success.mat-mdc-snack-bar-container .mdc-snackbar__surface {
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
 }
 
-.snackbar-error {
+.snackbar-error.mat-mdc-snack-bar-container .mdc-snackbar__surface {
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
 }
 
 .snackbar-success .mat-mdc-snack-bar-label,
-.snackbar-error .mat-mdc-snack-bar-label {
-  color: #fff !important;
-}
-
+.snackbar-error .mat-mdc-snack-bar-label,
 .snackbar-success .mdc-button__label,
 .snackbar-error .mdc-button__label {
-  color: #fff !important;
+  color: #ffffff !important;
   font-weight: 700;
+}
+
+.snackbar-success .mat-mdc-button,
+.snackbar-error .mat-mdc-button {
+  border-radius: 8px;
+  min-width: auto;
+  padding: 0 8px;
 }

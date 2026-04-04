@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Card } from '../../shared/components/card/card';
 import { DataTable, TableColumn } from '../../shared/components/data-table/data-table';
 import { EmployeeService } from '../../core/services/employee.service';
@@ -11,11 +12,24 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EmployeeDetailsDialog } from '../../shared/components/employee-details-dialog/employee-details-dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-funcionario',
   standalone: true,
-  imports: [CommonModule, Card, DataTable, MatSnackBarModule, MatPaginatorModule, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    Card,
+    DataTable,
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
   templateUrl: './funcionarios.html',
   styleUrls: ['./funcionarios.css'],
 })
@@ -65,6 +79,7 @@ export class Funcionario implements OnInit {
   totalElements = 0;
   currentPage = 0;
   pageSize = 9;
+  search = '';
 
   constructor(
     private employeeService: EmployeeService,
@@ -121,25 +136,35 @@ export class Funcionario implements OnInit {
     console.log('Dados do funcionário para edição:', employee);
     this.openDialog(employee);
   }
+
+  onView(employee: Employee): void {
+    this.dialog.open(EmployeeDetailsDialog, {
+      width: '100%',
+      maxWidth: '900px',
+      data: employee,
+      panelClass: 'custom-dialog-container',
+    });
+  }
+
   onDelete(employee: Employee): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '650px',
       data: {
-        title: 'Deletar Funcionário',
+        title: 'Desativar Funcionário',
         itemName: employee.fullName,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.employeeService.delete(employee.id!).subscribe({
+        this.employeeService.deactivate(employee.id!).subscribe({
           next: () => {
-            this.showNotification('Funcionário excluído com sucesso!');
+            this.showNotification('Funcionário desativado com sucesso!');
             this.refreshData();
           },
           error: (err) => {
-            console.error('Erro ao excluir', err);
-            this.showNotification('Erro ao excluir funcionário.', true);
+            console.error('Erro ao desativar', err);
+            this.showNotification('Erro ao desativar funcionário.', true);
           },
         });
       }
@@ -182,7 +207,7 @@ export class Funcionario implements OnInit {
   }
 
   private loadEmployees(): void {
-    this.employeeService.list(this.currentPage, this.pageSize).subscribe({
+    this.employeeService.list(this.currentPage, this.pageSize, this.search).subscribe({
       next: (response: any) => {
         this.funcionarios = response.content.map((emp: any) => ({
           ...emp,
@@ -195,6 +220,16 @@ export class Funcionario implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  applySearch(): void {
+    this.currentPage = 0;
+    this.loadEmployees();
+  }
+
+  clearSearch(): void {
+    this.search = '';
+    this.applySearch();
   }
 
   get pageNumbers(): number[] {

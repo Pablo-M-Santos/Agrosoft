@@ -15,39 +15,29 @@ export interface TableColumn<T = any> {
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule
-  ],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule],
   templateUrl: './data-table.html',
-  styleUrls: ['./data-table.css']
+  styleUrls: ['./data-table.css'],
 })
 export class DataTable implements OnChanges {
-
   @Input() columns: TableColumn[] = [];
   @Input() dataSource: any[] = [];
   @Input() statusMap: { [key: string]: string } = {};
 
-
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+  @Output() view = new EventEmitter<any>();
 
   displayedColumns: string[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['columns'] && this.columns.length) {
-      this.displayedColumns = this.columns.map(col => col.key);
+      this.displayedColumns = this.columns.map((col) => col.key);
     }
-
 
     if (changes['dataSource'] && this.dataSource) {
-
     }
   }
-
 
   formatStatusClass(status: string): string {
     if (!status) return '';
@@ -58,17 +48,12 @@ export class DataTable implements OnChanges {
   formatPhone(phone: string): string {
     if (!phone) return '';
 
-
     const digits = phone.replace(/\D/g, '');
-
 
     if (digits.length === 11) {
       return `(${digits.substring(0, 2)}) ${digits.substring(2, 7)}-${digits.substring(7)}`;
     }
 
-
     return phone;
   }
-
-
 }
