@@ -55,7 +55,7 @@ public class AnimalController {
     @PutMapping("/{id}")
     public ResponseEntity<AnimalResponseDTO> update(
             @PathVariable UUID id,
-            @RequestBody UpdateAnimalRequestDTO dto
+            @Valid @RequestBody UpdateAnimalRequestDTO dto
     ) {
         return ResponseEntity.ok(animalService.update(id, dto));
     }

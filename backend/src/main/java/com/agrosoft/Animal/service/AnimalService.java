@@ -10,6 +10,7 @@ import com.agrosoft.Animal.dto.AnimalResponseDTO;
 import com.agrosoft.Animal.dto.CreateAnimalRequestDTO;
 import com.agrosoft.Animal.dto.UpdateAnimalRequestDTO;
 import com.agrosoft.Animal.repository.AnimalRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,18 +41,7 @@ public class AnimalService {
         animal.setEntryDate(dto.getEntryDate());
         animal.setStatus(dto.getStatus() != null ? dto.getStatus() : AnimalStatus.ACTIVE);
 
-        AnimalType type;
-
-        if (dto.getAnimalTypeId() != null) {
-            type = animalTypeService.findById(dto.getAnimalTypeId());
-        } else if (dto.getName() != null) {
-            type = animalTypeService.findOrCreate(dto.getName());
-        } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Animal type is required"
-            );
-        }
+        AnimalType type = animalTypeService.findById(dto.getAnimalTypeId());
 
         animal.setType(type);
 
@@ -70,7 +60,7 @@ public class AnimalService {
 
 
     public List<AnimalResponseDTO> findAll() {
-        return animalRepository.findAll()
+        return animalRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
