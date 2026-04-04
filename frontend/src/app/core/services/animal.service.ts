@@ -37,4 +37,12 @@ export class AnimalService {
   findByType(typeId: string): Observable<Animal[]> {
     return this.http.get<Animal[]>(`${this.API}/type/${typeId}`);
   }
+
+  update(id: string, animal: Partial<Animal>): Observable<Animal> {
+    return this.http.put<Animal>(`${this.API}/${id}`, animal);
+  }
+
+  deactivate(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
+  }
 }

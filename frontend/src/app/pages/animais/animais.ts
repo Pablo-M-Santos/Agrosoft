@@ -8,6 +8,8 @@ import { AnimalService, AnimalStats } from '../../core/services/animal.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { AnimalFormDialog } from '../../shared/components/animal-form-dialog/animal-form-dialog';
+import { AnimalDetailsDialog } from '../../shared/components/animal-details-dialog/animal-details-dialog';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 
 type AnimalListItem = Animal & {
@@ -73,12 +75,63 @@ export class Animals implements OnInit {
     this.loadStats();
   }
 
+  onView(animal: Animal): void {
+    this.dialog.open(AnimalDetailsDialog, {
+      width: '100%',
+      maxWidth: '600px',
+      data: animal,
+      panelClass: 'custom-dialog-container',
+    });
+  }
+
   onEdit(animal: Animal): void {
-    console.log('Editar animal', animal);
+    const dialogRef = this.dialog.open(AnimalFormDialog, {
+      width: '100%',
+      maxWidth: '980px',
+      data: animal,
+      panelClass: 'custom-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+
+      this.animalService.update(animal.id, result).subscribe({
+        next: () => {
+          this.showNotification('Animal atualizado com sucesso!');
+          this.loadAnimals();
+          this.loadStats();
+        },
+        error: (err) => this.handleSaveError(err, 'atualizar animal'),
+      });
+    });
   }
 
   onDelete(animal: Animal): void {
-    console.log('Excluir animal', animal);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '650px',
+      data: {
+        title: 'Desativar Animal',
+        itemName: animal.name,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.animalService.deactivate(animal.id).subscribe({
+          next: () => {
+            this.showNotification('Animal desativado com sucesso!');
+            this.loadAnimals();
+            this.loadStats();
+          },
+          error: (err) => {
+            console.error('Erro ao desativar', err);
+            this.showNotification('Erro ao desativar animal.', true);
+          },
+        });
+      }
+    });
   }
 
   openDialog(): void {
