@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -45,6 +46,7 @@ public class FinancialTransactionService {
 
     public List<FinancialTransactionResponseDTO> findAll() {
         return repository.findAll().stream()
+                .sorted(Comparator.comparing(Financial::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
