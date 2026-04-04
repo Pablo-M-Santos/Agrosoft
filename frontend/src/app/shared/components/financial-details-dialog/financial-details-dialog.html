@@ -1,0 +1,40 @@
+<div mat-dialog-title class="details-header">
+  <div>
+    <h2>Detalhes da Transação</h2>
+    <p>{{ transaction.description }}</p>
+  </div>
+  <button mat-icon-button class="btn-close-header" (click)="close()" aria-label="Fechar">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+
+<div class="details-content" mat-dialog-content>
+  <div class="details-grid">
+    <div class="detail-item">
+      <span class="detail-label">Valor</span>
+      <span class="detail-value">{{ formatAmount(transaction.amount) }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Data da Transação</span>
+      <span class="detail-value">{{ formatDate(transaction.transactionDate) }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Tipo</span>
+      <span class="detail-value">{{ getTypeLabel(transaction.type) }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Categoria</span>
+      <span class="detail-value">{{ getCategoryLabel(transaction.category) }}</span>
+    </div>
+    <div class="detail-item full-row">
+      <span class="detail-label">Data de Criação</span>
+      <span class="detail-value">{{
+        transaction.createdAt ? formatDate(transaction.createdAt) : '-'
+      }}</span>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end" class="details-actions">
+  <button mat-raised-button color="primary" (click)="close()">Fechar</button>
+</div>
