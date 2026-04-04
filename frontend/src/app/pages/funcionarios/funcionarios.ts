@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Card } from '../../shared/components/card/card';
 import { DataTable, TableColumn } from '../../shared/components/data-table/data-table';
+import { PaginationComponent } from '../../shared/components/pagination/pagination';
 import { EmployeeService } from '../../core/services/employee.service';
 import { Employee } from '../../core/models/employee.model';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeFormDialog } from '../../shared/components/employee-form-dialog/employee-form-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EmployeeDetailsDialog } from '../../shared/components/employee-details-dialog/employee-details-dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,9 +23,8 @@ import { MatInputModule } from '@angular/material/input';
     FormsModule,
     Card,
     DataTable,
+    PaginationComponent,
     MatSnackBarModule,
-    MatPaginatorModule,
-    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
   ],
@@ -232,15 +230,6 @@ export class Funcionario implements OnInit {
     this.applySearch();
   }
 
-  get pageNumbers(): number[] {
-    const totalPages = Math.ceil(this.totalElements / this.pageSize);
-    return Array.from({ length: totalPages }, (_, i) => i);
-  }
-
-  goToPage(pageIndex: number): void {
-    this.currentPage = pageIndex;
-    this.loadEmployees();
-  }
   onPageChange(pageIndex: number): void {
     this.currentPage = pageIndex;
     this.loadEmployees();
