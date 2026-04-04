@@ -1,0 +1,25 @@
+<div class="custom-pagination" *ngIf="pageNumbers.length > 1">
+  <mat-icon class="nav-icon" [class.disabled]="currentPage === 0" (click)="previousPage()">
+    chevron_left
+  </mat-icon>
+
+  <div class="page-numbers">
+    <button
+      *ngFor="let page of pageNumbers"
+      type="button"
+      class="page-num-btn"
+      [class.active]="page === currentPage"
+      (click)="goToPage(page)"
+    >
+      {{ page + 1 }}
+    </button>
+  </div>
+
+  <mat-icon
+    class="nav-icon"
+    [class.disabled]="(currentPage + 1) * pageSize >= totalElements"
+    (click)="nextPage()"
+  >
+    chevron_right
+  </mat-icon>
+</div>
