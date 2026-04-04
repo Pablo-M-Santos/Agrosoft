@@ -1,0 +1,46 @@
+<div mat-dialog-title class="details-header">
+  <div>
+    <h2>Detalhes do Animal</h2>
+    <p>{{ animal.name }}</p>
+  </div>
+  <button mat-icon-button class="btn-close-header" (click)="close()" aria-label="Fechar">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+
+<div class="details-content" mat-dialog-content>
+  <div class="details-grid">
+    <div class="detail-item">
+      <span class="detail-label">Tipo</span>
+      <span class="detail-value">{{
+        animal.animalTypeName || animal.animalType?.name || '-'
+      }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Peso (kg)</span>
+      <span class="detail-value">{{ animal.weight || '-' }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Data de Entrada</span>
+      <span class="detail-value">{{ animal.entryDate ? formatDate(animal.entryDate) : '-' }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Status</span>
+      <span class="detail-value">{{ getStatusLabel(animal.status) }}</span>
+    </div>
+    <div class="detail-item full-row">
+      <span class="detail-label">Funcionário Responsável</span>
+      <span class="detail-value">{{
+        animal.responsibleEmployeeName || animal.responsibleEmployee?.fullName || 'Sem vínculo'
+      }}</span>
+    </div>
+    <div class="detail-item full-row">
+      <span class="detail-label">Data de Criação</span>
+      <span class="detail-value">{{ animal.createdAt ? formatDate(animal.createdAt) : '-' }}</span>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end" class="details-actions">
+  <button mat-raised-button color="primary" (click)="close()">Fechar</button>
+</div>

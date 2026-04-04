@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -59,6 +59,7 @@ export class AnimalFormDialog implements OnInit {
     private dialogRef: MatDialogRef<AnimalFormDialog>,
     private animalTypeService: AnimalTypeService,
     private employeeService: EmployeeService,
+    private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: Animal | null,
   ) {
     this.form = this.fb.group({
@@ -118,6 +119,7 @@ export class AnimalFormDialog implements OnInit {
     this.animalTypeService.list().subscribe({
       next: (types) => {
         this.animalTypes = [...types].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+        this.cdr.detectChanges();
       },
       error: () => {
         this.animalTypes = [];
@@ -134,6 +136,7 @@ export class AnimalFormDialog implements OnInit {
           .sort((a: EmployeeOption, b: EmployeeOption) =>
             a.fullName.localeCompare(b.fullName, 'pt-BR'),
           );
+        this.cdr.detectChanges();
       },
       error: () => {
         this.employees = [];
