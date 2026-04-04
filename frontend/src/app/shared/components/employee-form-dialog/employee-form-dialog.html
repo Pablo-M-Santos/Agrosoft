@@ -87,10 +87,6 @@
         <input matInput formControlName="workArea" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="compact-field">
-        <mat-label>Máquinas Relacionadas</mat-label>
-        <input matInput formControlName="relatedMachinery" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="compact-field">
         <mat-label>Salário</mat-label>
         <input matInput type="number" formControlName="salary" />
         <span matPrefix>R$&nbsp;</span>
@@ -108,6 +104,59 @@
         >
       </mat-form-field>
     </div>
+
+    <div class="machine-picker compact-field">
+      <div class="machine-picker-header">
+        <div class="machine-picker-title">
+          <span class="material-icons">precision_manufacturing</span>
+          Máquinas Relacionadas
+        </div>
+        <span class="machine-picker-counter">{{ selectedMachines.length }} selecionada(s)</span>
+      </div>
+
+      <mat-form-field appearance="outline" class="machine-search-field">
+        <mat-label>Pesquisar e adicionar máquina</mat-label>
+        <input
+          matInput
+          [formControl]="machineSearchControl"
+          [matAutocomplete]="machineAuto"
+          placeholder="Ex: Trator John Deere"
+        />
+        <span matSuffix class="material-icons machine-search-icon">search</span>
+      </mat-form-field>
+
+      <mat-autocomplete #machineAuto="matAutocomplete" (optionSelected)="selectMachine($event.option.value)">
+        <mat-option *ngIf="isMachinesLoading" [disabled]="true">Carregando máquinas...</mat-option>
+        <mat-option
+          *ngFor="let machine of filteredMachines; trackBy: trackByMachineId"
+          [value]="machine"
+        >
+          <div class="machine-option">
+            <span class="machine-option-name">{{ machine.name }}</span>
+            <span class="machine-option-meta"
+              >{{ machine.type }} • {{ machine.brand }} • {{ machine.model }}</span
+            >
+          </div>
+        </mat-option>
+        <mat-option *ngIf="!isMachinesLoading && filteredMachines.length === 0" [disabled]="true">
+          Nenhuma máquina encontrada para esse filtro.
+        </mat-option>
+      </mat-autocomplete>
+
+      <div class="machine-tags" *ngIf="selectedMachines.length > 0">
+        <button
+          type="button"
+          class="machine-tag"
+          *ngFor="let machine of selectedMachines; trackBy: trackByMachineId"
+          (click)="removeMachine(machine.id)"
+        >
+          <span class="machine-tag-name">{{ machine.name }}</span>
+          <span class="machine-tag-meta">{{ machine.type }}</span>
+          <span class="material-icons machine-tag-remove">close</span>
+        </button>
+      </div>
+    </div>
+
     <div class="form-grid-3">
       <mat-form-field appearance="outline">
         <mat-label>Data Contratação</mat-label>

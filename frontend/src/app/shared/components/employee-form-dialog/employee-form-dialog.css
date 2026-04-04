@@ -9,7 +9,7 @@
 
 .dialog-content {
   padding: 20px !important;
-  background-color: #FAF9FB;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
 .form-section-title {
@@ -127,5 +127,125 @@ mat-form-field {
 .btn-save .material-icons, .btn-cancel .material-icons {
     font-size: 18px;
     margin-right: 4px;
+}
+
+.machine-picker {
+  border: 1px solid #dbeafe;
+  background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 8px 22px rgba(14, 165, 233, 0.08);
+}
+
+.machine-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.machine-picker-title {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.machine-picker-title .material-icons {
+  color: #0ea5e9;
+  font-size: 20px;
+}
+
+.machine-picker-counter {
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.machine-search-field {
+  width: 100%;
+}
+
+.machine-search-icon {
+  color: #64748b;
+}
+
+.machine-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  line-height: 1.2;
+  padding: 6px 0;
+}
+
+.machine-option-name {
+  color: #0f172a;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.machine-option-meta {
+  color: #0369a1;
+  font-size: 0.76rem;
+  font-weight: 600;
+  background-color: #e0f2fe;
+  border-radius: 999px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .machine-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .machine-option-meta {
+    white-space: normal;
+  }
+}
+
+.machine-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.machine-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  background-color: #e0f2fe;
+  color: #0c4a6e;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.machine-tag:hover {
+  transform: translateY(-1px);
+  background-color: #bae6fd;
+}
+
+.machine-tag-name {
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.machine-tag-meta {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.machine-tag-remove {
+  font-size: 16px;
 }
 

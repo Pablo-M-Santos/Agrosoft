@@ -4,6 +4,7 @@ import {
   AbstractControl,
   AsyncValidatorFn,
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
@@ -17,11 +18,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { catchError, map, Observable, of } from 'rxjs';
 import { EmployeeService } from '../../../core/services/employee.service';
 import { Employee } from '../../../core/models/employee.model';
+import { Machine } from '../../../core/models/machine.model';
+import { MachineService } from '../../../core/services/machine.service';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
@@ -43,7 +45,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,
-    MatSnackBarModule,
+    MatAutocompleteModule,
     NgxMaskDirective,
   ],
   templateUrl: './employee-form-dialog.html',
@@ -54,12 +56,17 @@ export class EmployeeFormDialog implements OnInit {
   isEdit: boolean;
   categoriesCNH = ['A', 'B', 'C', 'D', 'E', 'AB', 'AC', 'AD', 'AE'];
   maxBirthDate = this.getMaxBirthDate();
+  machineSearchControl = new FormControl('');
+  allMachines: Machine[] = [];
+  filteredMachines: MachineSelectionOption[] = [];
+  selectedMachines: MachineSelectionOption[] = [];
+  isMachinesLoading = false;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<EmployeeFormDialog>,
-    private snackBar: MatSnackBar,
     private employeeService: EmployeeService,
+    private machineService: MachineService,
     @Inject(MAT_DIALOG_DATA) public data: Employee,
   ) {
     this.isEdit = !!data;
@@ -97,7 +104,10 @@ export class EmployeeFormDialog implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadMachines();
+    this.machineSearchControl.valueChanges.subscribe(() => this.filterMachines());
+  }
 
   save(): void {
     if (this.form.pending) {
@@ -110,6 +120,7 @@ export class EmployeeFormDialog implements OnInit {
     }
 
     const payload = { ...this.form.value };
+    payload.relatedMachinery = this.selectedMachines.map((machine) => machine.name).join(', ');
 
     if (payload.birthDate) {
       payload.birthDate = this.formatDate(payload.birthDate);
@@ -117,17 +128,6 @@ export class EmployeeFormDialog implements OnInit {
     if (payload.hireDate) {
       payload.hireDate = this.formatDate(payload.hireDate);
     }
-
-    this.snackBar.open(
-      this.isEdit ? 'Funcionário atualizado com sucesso!' : 'Funcionário cadastrado com sucesso!',
-      'Fechar',
-      {
-        duration: 3000,
-        horizontalPosition: 'end',
-        verticalPosition: 'top',
-        panelClass: ['snackbar-success'],
-      },
-    );
 
     this.dialogRef.close(payload);
   }
@@ -203,6 +203,98 @@ export class EmployeeFormDialog implements OnInit {
     };
   }
 
+  selectMachine(machine: MachineSelectionOption): void {
+    if (this.selectedMachines.some((selected) => selected.id === machine.id)) {
+      return;
+    }
+
+    this.selectedMachines = [...this.selectedMachines, machine];
+    this.machineSearchControl.setValue('');
+    this.filterMachines();
+  }
+
+  removeMachine(machineId: string): void {
+    this.selectedMachines = this.selectedMachines.filter((machine) => machine.id !== machineId);
+    this.filterMachines();
+  }
+
+  trackByMachineId(_: number, machine: MachineSelectionOption): string {
+    return machine.id;
+  }
+
+  private loadMachines(): void {
+    this.isMachinesLoading = true;
+
+    this.machineService.list().subscribe({
+      next: (machines) => {
+        this.allMachines = [...machines].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+        this.restoreSelectedMachines();
+        this.filterMachines();
+        this.isMachinesLoading = false;
+      },
+      error: () => {
+        this.allMachines = [];
+        this.filteredMachines = [];
+        this.isMachinesLoading = false;
+      },
+    });
+  }
+
+  private restoreSelectedMachines(): void {
+    const relatedMachinery = String(this.form.get('relatedMachinery')?.value || '');
+
+    if (!relatedMachinery.trim()) {
+      this.selectedMachines = [];
+      return;
+    }
+
+    const selectedNames = relatedMachinery
+      .split(',')
+      .map((name) => name.trim())
+      .filter((name) => !!name);
+
+    const machineByName = new Map(
+      this.allMachines.map((machine) => [machine.name.trim().toLowerCase(), machine]),
+    );
+
+    this.selectedMachines = selectedNames.map((name) => {
+      const foundMachine = machineByName.get(name.toLowerCase());
+
+      if (foundMachine) {
+        return foundMachine;
+      }
+
+      return {
+        id: `legacy-${name}`,
+        name,
+        type: 'Vinculada',
+        brand: '-',
+        model: '-',
+        status: 'ACTIVE',
+      } as MachineSelectionOption;
+    });
+  }
+
+  private filterMachines(): void {
+    const query = String(this.machineSearchControl.value || '')
+      .trim()
+      .toLowerCase();
+
+    const selectedIds = new Set(this.selectedMachines.map((machine) => machine.id));
+
+    this.filteredMachines = this.allMachines
+      .filter((machine) => !selectedIds.has(machine.id))
+      .filter((machine) => {
+        if (!query) {
+          return true;
+        }
+
+        const text = `${machine.name} ${machine.type} ${machine.brand} ${machine.model}`.toLowerCase();
+        return text.includes(query);
+      })
+      .slice(0, 12);
+  }
+
   emailAvailabilityValidator(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       const email = control.value;
@@ -266,3 +358,5 @@ export class EmployeeFormDialog implements OnInit {
     return errorName ? control.hasError(errorName) : control.invalid;
   }
 }
+
+type MachineSelectionOption = Pick<Machine, 'id' | 'name' | 'type' | 'brand' | 'model' | 'status'>;
