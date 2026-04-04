@@ -1,0 +1,85 @@
+<div mat-dialog-title class="dialog-header">
+  <h2>Novo Animal</h2>
+  <button mat-icon-button class="btn-close-header" (click)="close()">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+
+<div class="dialog-content">
+  <form [formGroup]="form" class="animal-form" (ngSubmit)="save()">
+    <div class="form-grid-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Nome do Animal</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="hasError('name', 'required')">Nome é obrigatório.</mat-error>
+        <mat-error *ngIf="hasError('name', 'minlength')">Informe ao menos 2 caracteres.</mat-error>
+        <mat-error *ngIf="hasError('name', 'maxlength')">Máximo de 100 caracteres.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="animalTypeId">
+          <mat-option *ngFor="let type of animalTypes" [value]="type.id">{{
+            type.name
+          }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="hasError('animalTypeId', 'required')">Tipo é obrigatório.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid-3">
+      <mat-form-field appearance="outline">
+        <mat-label>Peso (kg)</mat-label>
+        <input matInput type="number" min="0.01" step="0.01" formControlName="weight" />
+        <mat-error *ngIf="hasError('weight', 'required')">Peso é obrigatório.</mat-error>
+        <mat-error *ngIf="hasError('weight', 'min')">Peso deve ser maior que zero.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Data de Entrada</mat-label>
+        <input
+          matInput
+          [matDatepicker]="entryDatePicker"
+          [max]="maxEntryDate"
+          formControlName="entryDate"
+        />
+        <mat-datepicker-toggle matSuffix [for]="entryDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #entryDatePicker></mat-datepicker>
+        <mat-error *ngIf="hasError('entryDate', 'required')"
+          >Data de entrada é obrigatória.</mat-error
+        >
+        <mat-error *ngIf="hasError('entryDate', 'futureDate')"
+          >Data de entrada não pode ser futura.</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="ACTIVE">Na Fazenda</mat-option>
+          <mat-option value="UNDER_CARE">Em Tratamento</mat-option>
+          <mat-option value="SOLD">Vendido</mat-option>
+        </mat-select>
+        <mat-error *ngIf="hasError('status', 'required')">Status é obrigatório.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Funcionário Responsável (opcional)</mat-label>
+      <mat-select formControlName="responsibleEmployeeId">
+        <mat-option [value]="null">Sem vínculo</mat-option>
+        <mat-option *ngFor="let employee of employees" [value]="employee.id">
+          {{ employee.fullName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button type="button" mat-button class="btn-cancel" (click)="close()">Cancelar</button>
+      <button type="submit" mat-raised-button class="btn-save">
+        <span class="material-icons">save</span>
+        Salvar Animal
+      </button>
+    </div>
+  </form>
+</div>
