@@ -22,6 +22,18 @@ export class MachineService {
     return this.http.get<Machine[]>(this.API);
   }
 
+  create(machine: Partial<Machine>): Observable<Machine> {
+    return this.http.post<Machine>(this.API, machine);
+  }
+
+  update(id: string, machine: Partial<Machine>): Observable<Machine> {
+    return this.http.put<Machine>(`${this.API}/${id}`, machine);
+  }
+
+  deactivate(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
   getStats(): Observable<MachineStats> {
     return this.http.get<MachineStats>(`${this.API}/stats`);
   }
