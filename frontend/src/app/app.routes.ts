@@ -4,15 +4,18 @@ import { MainLayout } from './layout/main-layout/main-layout';
 export const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'usuarios',
+  },
+  {
+    path: 'usuarios',
     component: MainLayout,
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/usuario/usuario')
-            .then(m => m.Usuario),
-      }
-    ]
+        loadComponent: () => import('./pages/usuario/usuario').then((m) => m.Usuario),
+      },
+    ],
   },
   {
     path: 'funcionarios',
@@ -20,11 +23,9 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/funcionarios/funcionarios')
-            .then(m => m.Funcionario),
-      }
-    ]
+        loadComponent: () => import('./pages/funcionarios/funcionarios').then((m) => m.Funcionario),
+      },
+    ],
   },
   {
     path: 'maquinas',
@@ -32,11 +33,9 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/maquinas/maquinas')
-            .then(m => m.Maquinas),
-      }
-    ]
+        loadComponent: () => import('./pages/maquinas/maquinas').then((m) => m.Maquinas),
+      },
+    ],
   },
   {
     path: 'animais',
@@ -44,11 +43,9 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/animais/animais')
-            .then(m => m.Animals),
-      }
-    ]
+        loadComponent: () => import('./pages/animais/animais').then((m) => m.Animals),
+      },
+    ],
   },
   {
     path: 'financeiro',
@@ -56,12 +53,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/financeiro/financeiro')
-            .then(m => m.Financeiro),
-      }
-    ]
+        loadComponent: () => import('./pages/financeiro/financeiro').then((m) => m.Financeiro),
+      },
+    ],
   },
-
-
+  {
+    path: '**',
+    redirectTo: 'usuarios',
+  },
 ];
