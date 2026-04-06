@@ -7,11 +7,11 @@ import { PaginationComponent } from '../../shared/components/pagination/paginati
 import { EmployeeService } from '../../core/services/employee.service';
 import { Employee } from '../../core/models/employee.model';
 import { MatDialog } from '@angular/material/dialog';
-import { EmployeeFormDialog } from '../../shared/components/employee-form-dialog/employee-form-dialog';
+import { EmployeeFormDialog } from './components/employee-form-dialog/employee-form-dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { HttpErrorResponse } from '@angular/common/http';
-import { EmployeeDetailsDialog } from '../../shared/components/employee-details-dialog/employee-details-dialog';
+import { EmployeeDetailsDialog } from './components/employee-details-dialog/employee-details-dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 

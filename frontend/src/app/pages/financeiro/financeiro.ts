@@ -9,8 +9,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
-import { FinancialFormDialog } from '../../shared/components/financial-form-dialog/financial-form-dialog';
-import { FinancialDetailsDialog } from '../../shared/components/financial-details-dialog/financial-details-dialog';
+import { FinancialFormDialog } from './components/financial-form-dialog/financial-form-dialog';
+import { FinancialDetailsDialog } from './components/financial-details-dialog/financial-details-dialog';
 
 type FinancialListItem = Financial;
 

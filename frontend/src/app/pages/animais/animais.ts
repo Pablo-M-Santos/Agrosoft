@@ -7,8 +7,8 @@ import { Animal } from '../../core/models/animal.model';
 import { AnimalService, AnimalStats } from '../../core/services/animal.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { AnimalFormDialog } from '../../shared/components/animal-form-dialog/animal-form-dialog';
-import { AnimalDetailsDialog } from '../../shared/components/animal-details-dialog/animal-details-dialog';
+import { AnimalFormDialog } from './components/animal-form-dialog/animal-form-dialog';
+import { AnimalDetailsDialog } from './components/animal-details-dialog/animal-details-dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 
