@@ -1,0 +1,50 @@
+<div mat-dialog-title class="dialog-header">
+  <h2>{{ isEdit ? 'Editar Usuário' : 'Novo Usuário' }}</h2>
+  <button mat-icon-button class="btn-close-header" (click)="close()">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+
+<div class="dialog-content">
+  <form [formGroup]="form" class="user-form" (ngSubmit)="save()">
+    <div class="form-grid-2">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>E-mail</mat-label>
+        <input matInput type="email" formControlName="email" />
+        <mat-error *ngIf="hasError('email', 'required')">E-mail é obrigatório.</mat-error>
+        <mat-error *ngIf="hasError('email', 'email')">Informe um e-mail válido.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-grid-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Nível de Acesso</mat-label>
+        <mat-select formControlName="accessLevel">
+          <mat-option *ngFor="let level of accessLevels" [value]="level.value">{{
+            level.label
+          }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="hasError('accessLevel', 'required')"
+          >Nível de acesso é obrigatório.</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ isEdit ? 'Nova Senha (opcional)' : 'Senha' }}</mat-label>
+        <input matInput type="password" formControlName="password" />
+        <mat-error *ngIf="hasError('password', 'required')">Senha é obrigatória.</mat-error>
+        <mat-error *ngIf="hasError('password', 'minlength')"
+          >Senha deve ter ao menos 6 caracteres.</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" mat-button class="btn-cancel" (click)="close()">Cancelar</button>
+      <button type="submit" mat-raised-button class="btn-save">
+        <span class="material-icons">save</span>
+        {{ isEdit ? 'Atualizar Usuário' : 'Cadastrar Usuário' }}
+      </button>
+    </div>
+  </form>
+</div>

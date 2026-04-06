@@ -1,0 +1,34 @@
+<div mat-dialog-title class="details-header">
+  <div>
+    <h2>Detalhes do Usuário</h2>
+    <p>{{ user.email }}</p>
+  </div>
+  <button mat-icon-button class="btn-close-header" (click)="close()" aria-label="Fechar">
+    <span class="material-icons">close</span>
+  </button>
+</div>
+
+<div class="details-content" mat-dialog-content>
+  <div class="details-grid">
+    <div class="detail-item">
+      <span class="detail-label">E-mail</span>
+      <span class="detail-value">{{ user.email }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Nível de Acesso</span>
+      <span class="detail-value">{{ getAccessLevelLabel(user.accessLevel) }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Status</span>
+      <span class="detail-value">{{ getStatusLabel(user.active) }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Último Login</span>
+      <span class="detail-value">{{ formatLastLogin(user.lastLogin) }}</span>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end" class="details-actions">
+  <button mat-raised-button color="primary" (click)="close()">Fechar</button>
+</div>
