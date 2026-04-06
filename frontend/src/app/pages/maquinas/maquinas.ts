@@ -7,8 +7,8 @@ import { Machine } from '../../core/models/machine.model';
 import { MachineService, MachineStats } from '../../core/services/machine.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { MachineFormDialog } from '../../shared/components/machine-form-dialog/machine-form-dialog';
-import { MachineDetailsDialog } from '../../shared/components/machine-details-dialog/machine-details-dialog';
+import { MachineFormDialog } from './components/machine-form-dialog/machine-form-dialog';
+import { MachineDetailsDialog } from './components/machine-details-dialog/machine-details-dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 
