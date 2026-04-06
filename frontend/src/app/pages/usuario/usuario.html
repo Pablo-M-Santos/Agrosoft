@@ -1,1 +1,48 @@
-<p>usuario works!</p>
+<div class="cards-container">
+  <app-card title="Total de Usuários" [value]="cards.total" icon="group" iconColor="#3B82F6">
+  </app-card>
+
+  <app-card title="Usuários Ativos" [value]="cards.active" icon="check_circle" iconColor="#22C55E">
+  </app-card>
+
+  <app-card
+    title="Administradores"
+    [value]="cards.admins"
+    icon="admin_panel_settings"
+    iconColor="#F59E0B"
+  >
+  </app-card>
+
+  <app-card title="Gerentes" [value]="cards.managers" icon="badge" iconColor="#8B5CF6"> </app-card>
+</div>
+
+<div class="table-header">
+  <div class="table-header-text">
+    <h2>Usuários</h2>
+    <p>Gerencie acessos, perfis e status dos usuários da plataforma.</p>
+  </div>
+  <button class="btn-add" (click)="openDialog()">
+    <span class="material-icons">add</span>
+    Adicionar Usuário
+  </button>
+</div>
+
+<div class="main-table-card">
+  <app-data-table
+    [columns]="columns"
+    [dataSource]="users"
+    [statusMap]="statusMap"
+    (view)="onView($event)"
+    (edit)="onEdit($event)"
+    (delete)="onDelete($event)"
+  >
+  </app-data-table>
+
+  <app-pagination
+    [totalElements]="totalElements"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    (pageChange)="onPageChange($event)"
+  >
+  </app-pagination>
+</div>

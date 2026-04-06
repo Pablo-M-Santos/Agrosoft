@@ -1,0 +1,58 @@
+.table-header {
+  margin: 10px 0px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.table-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.table-header p {
+  font-size: 20px;
+  color: #6b7280;
+  margin: 10px 0 0 0;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #092c4c;
+  color: white;
+  font-weight: 600;
+  padding: 12px 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+}
+
+.material-icons {
+  font-size: 20px;
+  display: block;
+}
+
+.main-table-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+::ng-deep .table-container {
+  background: transparent !important;
+  padding: 0px 16px !important;
+}
