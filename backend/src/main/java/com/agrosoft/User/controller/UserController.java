@@ -1,6 +1,7 @@
 package com.agrosoft.User.controller;
 
 import com.agrosoft.User.dto.CreateUserRequestDTO;
+import com.agrosoft.User.dto.UpdateUserRequestDTO;
 import com.agrosoft.User.dto.UserResponseDTO;
 import com.agrosoft.User.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,11 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @RequestBody UpdateUserRequestDTO dto) {
+        return ResponseEntity.ok(userService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")

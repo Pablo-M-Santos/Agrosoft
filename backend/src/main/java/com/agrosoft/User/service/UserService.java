@@ -2,6 +2,7 @@ package com.agrosoft.User.service;
 
 import com.agrosoft.User.domain.User;
 import com.agrosoft.User.dto.CreateUserRequestDTO;
+import com.agrosoft.User.dto.UpdateUserRequestDTO;
 import com.agrosoft.User.dto.UserResponseDTO;
 import com.agrosoft.User.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -28,14 +29,19 @@ public class UserService {
 
     public UserResponseDTO create(CreateUserRequestDTO dto) {
 
+        String normalizedEmail = dto.getEmail() == null ? "" : dto.getEmail().trim().toLowerCase();
 
-        if (userRepository.existsByEmail(dto.getEmail())) {
+        if (normalizedEmail.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
+        }
+
+        if (userRepository.existsByEmail(normalizedEmail)) {
             throw new RuntimeException("Email already exists");
         }
 
 
         User user = new User();
-        user.setEmail(dto.getEmail());
+        user.setEmail(normalizedEmail);
         user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setAccessLevel(dto.getAccessLevel());
         user.setActive(true);
@@ -63,6 +69,34 @@ public class UserService {
 
 
         return toResponseDTO(user);
+    }
+
+
+    public UserResponseDTO update(UUID id, UpdateUserRequestDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        if (dto.getEmail() != null && !dto.getEmail().trim().isEmpty()) {
+            String normalizedEmail = dto.getEmail().trim().toLowerCase();
+
+            if (!normalizedEmail.equalsIgnoreCase(user.getEmail()) && userRepository.existsByEmail(normalizedEmail)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+            }
+
+            user.setEmail(normalizedEmail);
+        }
+
+        if (dto.getAccessLevel() != null) {
+            user.setAccessLevel(dto.getAccessLevel());
+        }
+
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            user.setPasswordHash(passwordEncoder.encode(dto.getPassword().trim()));
+        }
+
+        User updatedUser = userRepository.save(user);
+        return toResponseDTO(updatedUser);
     }
 
 
