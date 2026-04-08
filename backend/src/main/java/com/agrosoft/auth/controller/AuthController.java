@@ -4,6 +4,7 @@ import com.agrosoft.User.dto.CreateUserRequestDTO;
 import com.agrosoft.User.dto.UserResponseDTO;
 import com.agrosoft.auth.dto.AuthResponseDTO;
 import com.agrosoft.auth.dto.LoginRequestDTO;
+import com.agrosoft.auth.dto.RegisterRequestDTO;
 import com.agrosoft.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +42,10 @@ public class AuthController {
     @PostMapping("/bootstrap-admin")
     public ResponseEntity<UserResponseDTO> bootstrapAdmin(@Valid @RequestBody CreateUserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.bootstrapAdmin(dto));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody RegisterRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(dto));
     }
 }

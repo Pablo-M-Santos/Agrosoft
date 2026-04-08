@@ -8,6 +8,7 @@ import com.agrosoft.User.repository.UserRepository;
 import com.agrosoft.User.service.UserService;
 import com.agrosoft.auth.dto.AuthResponseDTO;
 import com.agrosoft.auth.dto.LoginRequestDTO;
+import com.agrosoft.auth.dto.RegisterRequestDTO;
 import com.agrosoft.auth.security.AuthUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -109,5 +110,14 @@ public class AuthService {
         }
 
         return userService.create(dto);
+    }
+
+    public UserResponseDTO register(RegisterRequestDTO dto) {
+        CreateUserRequestDTO createUserRequestDTO = new CreateUserRequestDTO();
+        createUserRequestDTO.setEmail(dto.getEmail());
+        createUserRequestDTO.setPassword(dto.getPassword());
+        createUserRequestDTO.setAccessLevel(AccessLevel.VIEWER);
+
+        return userService.create(createUserRequestDTO);
     }
 }
