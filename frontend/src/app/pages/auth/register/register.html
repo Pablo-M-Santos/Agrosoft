@@ -1,0 +1,75 @@
+<div class="auth-shell">
+  <div class="auth-panel">
+    <div class="brand-block">
+      <h1>Novo cadastro</h1>
+      <p>Crie seu usuário para acessar o AgroSoft.</p>
+    </div>
+
+    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()">
+      <div class="field-group">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" formControlName="email" placeholder="voce@agrosoft.com" />
+        <small class="field-error" *ngIf="hasError('email', 'required')"
+          >E-mail é obrigatório.</small
+        >
+        <small class="field-error" *ngIf="hasError('email', 'email')"
+          >Informe um e-mail válido.</small
+        >
+      </div>
+
+      <div class="field-group">
+        <label for="password">Senha</label>
+        <div class="password-wrapper">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="mínimo 6 caracteres"
+          />
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+          </button>
+        </div>
+        <small class="field-error" *ngIf="hasError('password', 'required')"
+          >Senha é obrigatória.</small
+        >
+        <small class="field-error" *ngIf="hasError('password', 'minlength')"
+          >Senha deve ter no mínimo 6 caracteres.</small
+        >
+      </div>
+
+      <div class="field-group">
+        <label for="confirmPassword">Confirmar senha</label>
+        <div class="password-wrapper">
+          <input
+            id="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            placeholder="repita a senha"
+            [class.field-ok]="passwordsMatch"
+            [class.field-error-border]="showPasswordMismatch"
+          />
+          <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
+            <span class="material-icons">{{
+              showConfirmPassword ? 'visibility_off' : 'visibility'
+            }}</span>
+          </button>
+        </div>
+        <small class="field-error" *ngIf="hasError('confirmPassword', 'required')"
+          >Confirmação é obrigatória.</small
+        >
+        <small class="field-error" *ngIf="showPasswordMismatch">As senhas não conferem.</small>
+        <small class="field-ok-text" *ngIf="passwordsMatch">Senhas conferem.</small>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Cadastrando...' : 'Cadastrar' }}
+      </button>
+
+      <p class="auth-footer">
+        Já possui conta?
+        <a routerLink="/login">Fazer login</a>
+      </p>
+    </form>
+  </div>
+</div>
