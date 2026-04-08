@@ -7,17 +7,22 @@
 
 <div class="dialog-content">
   <form [formGroup]="form" class="user-form" (ngSubmit)="save()">
+    <div class="form-section-title">
+      <span class="material-icons">person</span>
+      Dados de Acesso
+    </div>
+
     <div class="form-grid-2">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>E-mail</mat-label>
-        <input matInput type="email" formControlName="email" />
+        <input matInput type="email" formControlName="email" class="compact-field" />
         <mat-error *ngIf="hasError('email', 'required')">E-mail é obrigatório.</mat-error>
         <mat-error *ngIf="hasError('email', 'email')">Informe um e-mail válido.</mat-error>
       </mat-form-field>
     </div>
 
     <div class="form-grid-2">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="compact-field">
         <mat-label>Nível de Acesso</mat-label>
         <mat-select formControlName="accessLevel">
           <mat-option *ngFor="let level of accessLevels" [value]="level.value">{{
@@ -29,7 +34,7 @@
         >
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="compact-field">
         <mat-label>{{ isEdit ? 'Nova Senha (opcional)' : 'Senha' }}</mat-label>
         <input matInput type="password" formControlName="password" />
         <mat-error *ngIf="hasError('password', 'required')">Senha é obrigatória.</mat-error>

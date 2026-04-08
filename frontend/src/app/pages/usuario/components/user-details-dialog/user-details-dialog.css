@@ -81,4 +81,14 @@
   .details-grid {
     grid-template-columns: 1fr;
   }
+
+  .details-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-close-header {
+    align-self: flex-end;
+  }
 }

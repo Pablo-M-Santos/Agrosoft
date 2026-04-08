@@ -86,7 +86,7 @@ export class Usuario implements OnInit, OnDestroy {
   openDialog(user?: User): void {
     const dialogRef = this.dialog.open(UserFormDialog, {
       width: '100%',
-      maxWidth: '760px',
+      maxWidth: '980px',
       data: { user: user || null },
       panelClass: 'custom-dialog-container',
     });
@@ -131,7 +131,7 @@ export class Usuario implements OnInit, OnDestroy {
   onView(user: User): void {
     this.dialog.open(UserDetailsDialog, {
       width: '100%',
-      maxWidth: '760px',
+      maxWidth: '600px',
       data: user,
       panelClass: 'custom-dialog-container',
     });
