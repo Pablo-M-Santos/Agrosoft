@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody CreateUserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody CreateUserRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.create(dto));
     }
