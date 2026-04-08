@@ -1,0 +1,48 @@
+<div class="auth-shell">
+  <div class="auth-panel">
+    <div class="brand-block">
+      <h1>AgroSoft</h1>
+      <p>Faça login para acessar o sistema de gestão.</p>
+    </div>
+
+    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()">
+      <div class="field-group">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" formControlName="email" placeholder="voce@agrosoft.com" />
+        <small class="field-error" *ngIf="hasError('email', 'required')"
+          >E-mail é obrigatório.</small
+        >
+        <small class="field-error" *ngIf="hasError('email', 'email')"
+          >Informe um e-mail válido.</small
+        >
+      </div>
+
+      <div class="field-group">
+        <label for="password">Senha</label>
+        <div class="password-wrapper">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="********"
+          />
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+          </button>
+        </div>
+        <small class="field-error" *ngIf="hasError('password', 'required')"
+          >Senha é obrigatória.</small
+        >
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+      <p class="auth-footer">
+        Não tem conta?
+        <a routerLink="/cadastro">Criar usuário</a>
+      </p>
+    </form>
+  </div>
+</div>
