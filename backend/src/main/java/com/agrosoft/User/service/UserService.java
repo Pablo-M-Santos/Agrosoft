@@ -6,7 +6,7 @@ import com.agrosoft.User.dto.UpdateUserRequestDTO;
 import com.agrosoft.User.dto.UserResponseDTO;
 import com.agrosoft.User.repository.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,31 +18,40 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     public UserResponseDTO create(CreateUserRequestDTO dto) {
 
         String normalizedEmail = dto.getEmail() == null ? "" : dto.getEmail().trim().toLowerCase();
+        String rawPassword = dto.getPassword() == null ? "" : dto.getPassword().trim();
 
         if (normalizedEmail.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
         }
 
+        if (rawPassword.isEmpty() || rawPassword.length() < 6) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must have at least 6 characters");
+        }
+
+        if (dto.getAccessLevel() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Access level is required");
+        }
+
         if (userRepository.existsByEmail(normalizedEmail)) {
-            throw new RuntimeException("Email already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }
 
 
         User user = new User();
         user.setEmail(normalizedEmail);
-        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(rawPassword));
         user.setAccessLevel(dto.getAccessLevel());
         user.setActive(true);
 
@@ -80,8 +89,14 @@ public class UserService {
         if (dto.getEmail() != null && !dto.getEmail().trim().isEmpty()) {
             String normalizedEmail = dto.getEmail().trim().toLowerCase();
 
-            if (!normalizedEmail.equalsIgnoreCase(user.getEmail()) && userRepository.existsByEmail(normalizedEmail)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+            userRepository.findByEmailIgnoreCase(normalizedEmail).ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(user.getId())) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+                }
+            });
+
+            if (normalizedEmail.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
             }
 
             user.setEmail(normalizedEmail);
