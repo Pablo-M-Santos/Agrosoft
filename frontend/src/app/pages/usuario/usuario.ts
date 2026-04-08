@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card } from '../../shared/components/card/card';
 import { DataTable, TableColumn } from '../../shared/components/data-table/data-table';
@@ -11,6 +11,8 @@ import { UserService } from '../../core/services/user.service';
 import { UpdateUserPayload, User } from '../../core/models/user.model';
 import { UserFormDialog } from './components/user-form-dialog/user-form-dialog';
 import { UserDetailsDialog } from './components/user-details-dialog/user-details-dialog';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subject, filter, takeUntil } from 'rxjs';
 
 type UserListItem = User & {
   accessLevelText: string;
@@ -27,7 +29,7 @@ type UserListItem = User & {
   templateUrl: './usuario.html',
   styleUrls: ['./usuario.css'],
 })
-export class Usuario implements OnInit {
+export class Usuario implements OnInit, OnDestroy {
   columns: TableColumn<UserListItem>[] = [
     { key: 'email', label: 'E-MAIL', type: 'text' },
     { key: 'accessLevelText', label: 'NÍVEL DE ACESSO', type: 'text' },
@@ -54,14 +56,31 @@ export class Usuario implements OnInit {
     INATIVO: 'inativo',
   };
 
+  private readonly destroy$ = new Subject<void>();
+
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        filter((event) => event.urlAfterRedirects === '/usuarios'),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => this.loadUsers());
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   openDialog(user?: User): void {
@@ -167,8 +186,8 @@ export class Usuario implements OnInit {
             lastLoginText: this.formatLastLogin(user.lastLogin),
           }))
           .sort((a, b) => {
-            const dateA = a.lastLogin ? new Date(a.lastLogin).getTime() : 0;
-            const dateB = b.lastLogin ? new Date(b.lastLogin).getTime() : 0;
+            const dateA = this.getSortTimestamp(a);
+            const dateB = this.getSortTimestamp(b);
             return dateB - dateA;
           });
 
@@ -176,10 +195,15 @@ export class Usuario implements OnInit {
         this.currentPage = 0;
         this.updateVisibleUsers();
         this.updateCards();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Erro ao carregar usuários', err);
+        this.users = [];
+        this.allUsers = [];
+        this.totalElements = 0;
         this.showNotification('Erro ao carregar usuários.', true);
+        this.cdr.detectChanges();
       },
     });
   }
@@ -238,5 +262,21 @@ export class Usuario implements OnInit {
     }
 
     return new Date(lastLogin).toLocaleString('pt-BR');
+  }
+
+  private getSortTimestamp(user: User): number {
+    if (user.updatedAt) {
+      return new Date(user.updatedAt).getTime();
+    }
+
+    if (user.createdAt) {
+      return new Date(user.createdAt).getTime();
+    }
+
+    if (user.lastLogin) {
+      return new Date(user.lastLogin).getTime();
+    }
+
+    return 0;
   }
 }

@@ -16,6 +16,8 @@ public class UserResponseDTO {
     private AccessLevel accessLevel;
     private LocalDateTime lastLogin;
     private Boolean active;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
 
 

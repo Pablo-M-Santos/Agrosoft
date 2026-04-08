@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +27,7 @@ export interface TableColumn<T = any> {
   templateUrl: './data-table.html',
   styleUrls: ['./data-table.css'],
 })
-export class DataTable implements OnChanges {
+export class DataTable implements OnInit, OnChanges {
   @Input() columns: TableColumn[] = [];
   @Input() dataSource: any[] = [];
   @Input() statusMap: { [key: string]: string } = {};
@@ -30,13 +38,21 @@ export class DataTable implements OnChanges {
 
   displayedColumns: string[] = [];
 
+  ngOnInit(): void {
+    this.syncDisplayedColumns();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['columns'] && this.columns.length) {
-      this.displayedColumns = this.columns.map((col) => col.key);
+    if (changes['columns'] || (!this.displayedColumns.length && this.columns.length)) {
+      this.syncDisplayedColumns();
     }
 
     if (changes['dataSource'] && this.dataSource) {
     }
+  }
+
+  private syncDisplayedColumns(): void {
+    this.displayedColumns = this.columns.map((col) => col.key);
   }
 
   formatStatusClass(status: string): string {

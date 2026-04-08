@@ -129,6 +129,8 @@ public class UserService {
         dto.setAccessLevel(user.getAccessLevel());
         dto.setLastLogin(user.getLastLogin());
         dto.setActive(user.getActive());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }
 }

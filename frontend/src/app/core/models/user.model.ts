@@ -5,6 +5,8 @@ export interface User {
   email: string;
   accessLevel: AccessLevel;
   lastLogin?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
   active: boolean;
 }
 
