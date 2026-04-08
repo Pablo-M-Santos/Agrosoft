@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -97,6 +98,25 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+
+        @ExceptionHandler(ResponseStatusException.class)
+        public ResponseEntity<ApiErrorResponse> handleResponseStatusException(
+                        ResponseStatusException ex,
+                        HttpServletRequest request
+        ) {
+                HttpStatus status = ex.getStatus();
+                String message = ex.getReason() != null ? ex.getReason() : status.getReasonPhrase();
+
+                ApiErrorResponse response = new ApiErrorResponse(
+                                status.value(),
+                                status.getReasonPhrase(),
+                                message,
+                                request.getRequestURI()
+                );
+
+                return ResponseEntity.status(status).body(response);
+        }
 
 
     @ExceptionHandler(Exception.class)
