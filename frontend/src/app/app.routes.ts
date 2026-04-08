@@ -1,15 +1,28 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from './layout/main-layout/main-layout';
+import { authGuard } from './core/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'usuarios',
+    redirectTo: 'login',
+  },
+  {
+    path: 'login',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./pages/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'cadastro',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./pages/auth/register/register').then((m) => m.Register),
   },
   {
     path: 'usuarios',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -20,6 +33,7 @@ export const routes: Routes = [
   {
     path: 'funcionarios',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -30,6 +44,7 @@ export const routes: Routes = [
   {
     path: 'maquinas',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -40,6 +55,7 @@ export const routes: Routes = [
   {
     path: 'animais',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -50,6 +66,7 @@ export const routes: Routes = [
   {
     path: 'financeiro',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -59,6 +76,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'usuarios',
+    redirectTo: 'login',
   },
 ];
